@@ -138,15 +138,17 @@ class App extends Component {
       <Header onSubmit={this.performSearch.bind(this)} />
       <div id="hero" className="Hero" style={{backgroundImage: 'url(https://itbok.files.wordpress.com/2011/03/shutterstock_20850556_resize.jpg)'}}>
       <div className="content">
-       <ul>
-          {this.renderQuestions()}
-        </ul>
+       
       <h1> Pregunta lo que quieras, cuando quieras</h1>
       <p>Con Aski puedes preguntar y responder cientos de preguntas de todas partes del mundo. Solo create una cuenta y accede a la mejor red de preguntas.</p>
       <div className="button-wrapper">
       <HeroButton primary={true} text="Accede ahora" />
       </div>
+         <ul>
+          {this.renderQuestions()}
+        </ul>
       </div>
+
       <div className="overlay"></div>
       </div>
       </div>
