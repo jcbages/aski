@@ -176,9 +176,11 @@ p {
 
 .Hero {
   width: 100%;
-  position: relative;
   background-size: cover;
   height: 700px;
+  background-position: bottom;
+  position:absolute;
+    top:0;
 }
 .Hero .content {
   position: relative;

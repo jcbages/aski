@@ -136,7 +136,7 @@ class App extends Component {
     return (
       <div className = "container">
       <Header onSubmit={this.performSearch.bind(this)} />
-      <div id="hero" className="Hero" style={{backgroundImage: 'url(https://itbok.files.wordpress.com/2011/03/shutterstock_20850556_resize.jpg)'}}>
+      <div id="hero" className="Hero" style={{backgroundImage: 'url(http://hightechforum.org/wp-content/uploads/2015/03/iStock_000034051058_Large.jpg)'}}>
       <div className="content">
        
       <h1> Pregunta lo que quieras, cuando quieras</h1>
