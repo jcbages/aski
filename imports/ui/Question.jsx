@@ -26,12 +26,6 @@ export default class Question extends Component {
       &times;
       </button>
 
-      <input
-      type="checkbox"
-      readOnly
-      checked={this.props.question.checked}
-      onClick={this.toggleChecked.bind(this)}
-      />
       <span className="text">{this.props.question.question}</span>
       </li>
       );
