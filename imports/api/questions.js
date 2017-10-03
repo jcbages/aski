@@ -1,7 +1,7 @@
-import { Meteor } from 'meteor/meteor';
-import { Mongo } from 'meteor/mongo';
-import { check } from 'meteor/check';
-import SimpleSchema from 'simpl-schema';
+import { Meteor } from "meteor/meteor";
+import { Mongo } from "meteor/mongo";
+import { check } from "meteor/check";
+import SimpleSchema from "simpl-schema";
 
 
 const countryOptSchema = new SimpleSchema({
@@ -42,5 +42,5 @@ const questionSchema = new SimpleSchema({
 
 });
 
-export const Questions = new Mongo.Collection('questions');
+export const Questions = new Mongo.Collection("questions");
 

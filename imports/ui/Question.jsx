@@ -22,13 +22,13 @@ export default class Question extends Component {
 
     return(
       <li className={questionClassName}>
-      <button className="delete" onClick={this.deleteThisQuestion.bind(this)}>
-      &times;
-      </button>
+        <button className="delete" onClick={this.deleteThisQuestion.bind(this)}>
+        &times;
+        </button>
 
-      <span className="text">{this.props.question.question}</span>
+        <span className="text">{this.props.question.question}</span>
       </li>
-      );
+    );
   }
 }
 
