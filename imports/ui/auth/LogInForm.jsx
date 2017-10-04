@@ -31,9 +31,13 @@ class LogInForm extends Component{
     const username = this.user.username;
     const password = this.user.password;
 
-    Meteor.loginWithPassword(username, password, function(error){
+    Meteor.loginWithPassword(username, password, (error) =>{
       if(error){
         console.log(error);
+      }
+      else{
+        console.log(this.props.parent)
+        this.props.parent.setState({showPopup:false});
       }
     })
     
@@ -55,7 +59,7 @@ class LogInForm extends Component{
           errorText=""
           onChange={this.onPasswordChange}
         />
-        <RaisedButton label="Log In" secondary={true} onClick={this.handleLogIn}/>
+        <RaisedButton label="Log In" secondary={true} onClick={this.handleLogIn.bind(this)}/>
   		</form>
     );
 	}

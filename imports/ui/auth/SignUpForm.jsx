@@ -44,14 +44,19 @@ class SignUpForm extends Component{
       profile: {
         country: country
       }
-    }, function(err){
+    }, (err)=>{
       if(err){
         console.log(err);
+      }
+      else{
+        this.props.parent.setState({showPopup:false});
       }
     });
   }
 
 	render(){
+      console.log(this.props.parent);
+
 		return (
       <form>
         <div>Username</div>
@@ -68,8 +73,8 @@ class SignUpForm extends Component{
           onChange={this.onPasswordChange}
         />
         <div>Country</div>
-        <CountrySelect flagImagePath="/flags" onSelect={this.onSelectCountry}/>
-        <RaisedButton label="Sign In" secondary={true} onClick={this.handleSignUp}/>
+        <CountrySelect flagImagePath="/flags/" onSelect={this.onSelectCountry}/>
+        <RaisedButton label="Sign In" secondary={true} onClick={this.handleSignUp.bind(this)}/>
   		</form>
     );
 	}

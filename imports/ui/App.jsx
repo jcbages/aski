@@ -12,6 +12,9 @@ import darkBaseTheme from 'material-ui/styles/baseThemes/darkBaseTheme';
 import getMuiTheme from 'material-ui/styles/getMuiTheme';
 import AuthForm from "./auth/AuthForm.jsx"
 import RaisedButton from 'material-ui/RaisedButton';
+import Popup from "react-popup";
+import SweetAlert from "react-bootstrap-sweetalert";
+
 
 
 ////////////
@@ -79,6 +82,12 @@ class Search extends React.Component{
 
 // App component - represents the whole app
 class App extends Component {
+  constructor() {
+    super();
+    this.state = {
+      showPopup: false
+    };
+  }
 
   performSearch(e) {
     // stop form from submitting
@@ -109,6 +118,11 @@ class App extends Component {
       <Question key={question._id} question={question} />
     ));
   }
+  handlePopup(ev){
+    this.setState({
+      showPopup: !this.state.showPopup
+    });
+  }
 
 
   render() {
@@ -118,24 +132,33 @@ class App extends Component {
       <MuiThemeProvider muiTheme={getMuiTheme(darkBaseTheme)}>
         <div className = "container">
           <Header onSubmit={this.performSearch.bind(this)} currentUser={this.props.currentUser}/>
-          <div id="hero" className="Hero" style={{backgroundImage: "url(http://hightechforum.org/wp-content/uploads/2015/03/iStock_000034051058_Large.jpg)"}}>
+          <div id="hero" className="Hero" style={{backgroundImage: "url(/background.jpg)"}}>
             <div className="content">
 
               <h1> Pregunta lo que quieras, cuando quieras</h1>
               <p>Con Aski puedes preguntar y responder cientos de preguntas de todas partes del mundo. Solo create una cuenta y accede a la mejor red de preguntas.</p>
               
               {!this.props.currentUser ? 
-                <AuthForm /> :
+                <RaisedButton onClick={this.handlePopup.bind(this)} /> :
                 <div>{this.props.currentUser.username}</div>
               }
               <ul>
                 {this.renderQuestions()}
               </ul>
             </div>
-
             <div className="overlay"></div>
           </div>
         </div>
+        {this.state.showPopup ? 
+          <SweetAlert 
+          title={<AuthForm parent={this}/>} 
+          style={{color:"grey"}} 
+          onOutsideClick={() => {
+            this.setState({ showPopup: false })
+            }} 
+          onConfirm={() => this.setState({ showPopup: false })} /> 
+        : null
+        }
       </MuiThemeProvider>
     );
   }

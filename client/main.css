@@ -1,9 +1,9 @@
-
 @import "https://fonts.googleapis.com/css?family=Lato:100,300,400,700,900";
-body {
+body#bootstrap-overrides {
   background: #221f1f;
   color: #ffffff;
   font-family: "Lato", sans-serif;
+  overflow-x: hidden;
 }
 
 h2, .TitleList .Title {
@@ -39,6 +39,10 @@ p {
   box-sizing: border-box;
   z-index: 5;
 }
+#render-target > div:nth-child(2) > div.sweet-alert > p
+{
+display:none;
+}
 
 .Logo {
   width: 151px;
@@ -57,6 +61,9 @@ p {
   fill: #e50914;
   -webkit-transition: fill .125s ease;
   transition: fill .125s ease;
+}
+input{
+	color:black !important;
 }
 .Logo:hover {
   cursor: pointer;
@@ -174,13 +181,14 @@ p {
   display: none;
 }
 
-.Hero {
+#bootstrap-overrides .Hero {
   width: 100%;
   background-size: cover;
-  height: 700px;
+  height: 100%;
   background-position: bottom;
   position:absolute;
-    top:0;
+  left:0;
+  top:0;
 }
 .Hero .content {
   position: relative;

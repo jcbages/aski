@@ -21,13 +21,13 @@ class AuthForm extends Component{
 	}
 
 	render(){
-
+	console.log(this.props.parent);
     const label = this.state.signUp ? "Log In" : "Sign Up";
 		return(
       <div>
         {this.state.signUp ?
-          <SignUpForm /> :
-          <LogInForm />
+          <SignUpForm parent = {this.props.parent} /> :
+          <LogInForm parent = {this.props.parent} />
         }
         <Toggle label={label} onToggle={this.onToggle} toggled={this.state.signUp} />
       </div>
