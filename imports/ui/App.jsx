@@ -5,6 +5,13 @@ import { createContainer } from "meteor/react-meteor-data";
 import { Questions } from "../api/questions.js";
 import Question from "./Question.jsx";
 import { Session } from "meteor/session";
+import {Meteor} from "meteor/meteor"
+
+import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
+import darkBaseTheme from 'material-ui/styles/baseThemes/darkBaseTheme';
+import getMuiTheme from 'material-ui/styles/getMuiTheme';
+import AuthForm from "./auth/AuthForm.jsx"
+import RaisedButton from 'material-ui/RaisedButton';
 
 
 ////////////
@@ -16,7 +23,7 @@ class Header extends React.Component{
     return (
       <header className="Header">
         <Logo/>
-        <Navigation />
+        <Navigation currentUser={this.props.currentUser}/>
         <Search onSubmit={this.props.onSubmit} />
       </header>
     );
@@ -49,6 +56,9 @@ class Navigation extends React.Component{
             <li>Browse</li>
             <li>My Questions</li>
             <li>Top picks</li>
+            {this.props.currentUser ?
+              <li onClick={() => Meteor.logout()}>Log Out</li>:""
+            }
           </ul>
         </nav>
       </div>
@@ -102,22 +112,31 @@ class App extends Component {
 
 
   render() {
+    console.log(this.props.currentUser);
+
     return (
-      <div className = "container">
-        <Header onSubmit={this.performSearch.bind(this)} />
-        <div id="hero" className="Hero" style={{backgroundImage: "url(http://hightechforum.org/wp-content/uploads/2015/03/iStock_000034051058_Large.jpg)"}}>
-          <div className="content">
+      <MuiThemeProvider muiTheme={getMuiTheme(darkBaseTheme)}>
+        <div className = "container">
+          <Header onSubmit={this.performSearch.bind(this)} currentUser={this.props.currentUser}/>
+          <div id="hero" className="Hero" style={{backgroundImage: "url(http://hightechforum.org/wp-content/uploads/2015/03/iStock_000034051058_Large.jpg)"}}>
+            <div className="content">
 
-            <h1> Pregunta lo que quieras, cuando quieras</h1>
-            <p>Con Aski puedes preguntar y responder cientos de preguntas de todas partes del mundo. Solo create una cuenta y accede a la mejor red de preguntas.</p>
-            <ul>
-              {this.renderQuestions()}
-            </ul>
+              <h1> Pregunta lo que quieras, cuando quieras</h1>
+              <p>Con Aski puedes preguntar y responder cientos de preguntas de todas partes del mundo. Solo create una cuenta y accede a la mejor red de preguntas.</p>
+              
+              {!this.props.currentUser ? 
+                <AuthForm /> :
+                <div>{this.props.currentUser.username}</div>
+              }
+              <ul>
+                {this.renderQuestions()}
+              </ul>
+            </div>
+
+            <div className="overlay"></div>
           </div>
-
-          <div className="overlay"></div>
         </div>
-      </div>
+      </MuiThemeProvider>
     );
   }
 }
@@ -129,5 +148,6 @@ export default createContainer(() => {
   Session.setDefault("query","");
   return {
     questions: Questions.find({question: {"$regex": Session.get("query")}}, { sort: { publishedAt: -1 }}).fetch(),
+    currentUser:Meteor.user(),
   };
 }, App);
