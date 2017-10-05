@@ -16,6 +16,7 @@ class SignUpForm extends Component{
     this.onUserChange = this.onUserChange.bind(this);
     this.onPasswordChange = this.onPasswordChange.bind(this);
     this.user = {};
+    this.error = "";
   }
 
   onSelectCountry(val){
@@ -44,14 +45,18 @@ class SignUpForm extends Component{
       profile: {
         country: country
       }
-    }, (err)=>{
+    },(err)=>{
       if(err){
         console.log(err);
+        this.props.error = error.reason;
       }
       else{
         this.props.parent.setState({showPopup:false});
       }
     });
+  }
+  handlePopup(){
+    this.props.popup();
   }
 
 	render(){
@@ -59,20 +64,23 @@ class SignUpForm extends Component{
 
 		return (
       <form>
-        <div>Username</div>
+        <button className="cancel" onClick={() => this.handlePopup()}>
+          &times;
+        </button>
+        <div>Sign Up</div>
         <TextField 
           hintText="Username"
-          errorText=""
+          hintStyle={{color: "rgba(0,0,0,.26)",pointerEvents:"none",zIndex: "1",bottom: "10px",left: "5px"}} 
+          errorText={this.props.error}
           onChange={this.onUserChange}
         />
-        <div>Password</div>
         <TextField 
           hintText="Password"
           type="password"
-          errorText=""
+          hintStyle={{color: "rgba(0,0,0,.26)",pointerEvents:"none",zIndex: "1",bottom: "10px",left: "5px"}} 
+          errorText={this.props.error}
           onChange={this.onPasswordChange}
-        />
-        <div>Country</div>
+        />  
         <CountrySelect flagImagePath="/flags/" onSelect={this.onSelectCountry}/>
         <RaisedButton label="Sign In" secondary={true} onClick={this.handleSignUp.bind(this)}/>
   		</form>

@@ -14,6 +14,7 @@ class LogInForm extends Component{
     this.onUserChange = this.onUserChange.bind(this);
     this.onPasswordChange = this.onPasswordChange.bind(this);
     this.user = {};
+    this.error = "";
   }
 
   onUserChange(event, newValue){
@@ -34,6 +35,7 @@ class LogInForm extends Component{
     Meteor.loginWithPassword(username, password, (error) =>{
       if(error){
         console.log(error);
+        this.props.error = error.reason;
       }
       else{
         console.log(this.props.parent)
@@ -42,21 +44,30 @@ class LogInForm extends Component{
     })
     
   }
+  handlePopup(){
+    this.props.popup();
+  }
 
 	render(){
 		return (
       <form>
-        <div>Username</div>
+        <button className="cancel" onClick={() => this.handlePopup()}>
+          &times;
+        </button>
+        <div>
+          Login
+        </div>
         <TextField 
           hintText="Username"
-          errorText=""
+          errorText={this.props.error}
+          hintStyle={{color: "rgba(0,0,0,.26)",pointerEvents:"none",zIndex: "1",bottom: "10px",left: "5px"}} 
           onChange={this.onUserChange}
         />
-        <div>Password</div>
         <TextField 
           hintText="Password"
           type="password"
-          errorText=""
+          errorText={this.props.error}
+          hintStyle={{color: "rgba(0,0,0,.26)",zIndex: "1",pointerEvents:"none",bottom: "10px",left: "5px"}} 
           onChange={this.onPasswordChange}
         />
         <RaisedButton label="Log In" secondary={true} onClick={this.handleLogIn.bind(this)}/>

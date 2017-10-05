@@ -60,7 +60,15 @@ class Navigation extends React.Component{
             <li>My Questions</li>
             <li>Top picks</li>
             {this.props.currentUser ?
-              <li onClick={() => Meteor.logout()}>Log Out</li>:""
+              <div className="account pull-right">
+              <img src="/img/profile_placeholder.svg" class="profile-pic"/>
+              <div className="details">
+              <p className="headline">Logged in as:</p>
+              <p className="username text-primary">{this.props.currentUser.username}</p>
+              </div>
+              <li className="logout" onClick={() => Meteor.logout()}>Log Out</li>
+              </div>
+              : ""
             }
           </ul>
         </nav>
@@ -139,8 +147,7 @@ class App extends Component {
               <p>Con Aski puedes preguntar y responder cientos de preguntas de todas partes del mundo. Solo create una cuenta y accede a la mejor red de preguntas.</p>
               
               {!this.props.currentUser ? 
-                <RaisedButton onClick={this.handlePopup.bind(this)} /> :
-                <div>{this.props.currentUser.username}</div>
+                <RaisedButton  onClick={this.handlePopup.bind(this)}>Sign In / Login</RaisedButton> : null
               }
               <ul>
                 {this.renderQuestions()}
@@ -151,11 +158,11 @@ class App extends Component {
         </div>
         {this.state.showPopup ? 
           <SweetAlert 
-          title={<AuthForm parent={this}/>} 
+          title={<AuthForm popup={this.handlePopup.bind(this)}/>} 
           style={{color:"grey"}} 
-          onOutsideClick={() => {
+          onOutsideClick={()=>
             this.setState({ showPopup: false })
-            }} 
+            }
           onConfirm={() => this.setState({ showPopup: false })} /> 
         : null
         }
