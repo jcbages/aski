@@ -4,9 +4,14 @@ import { render } from 'react-dom';
 import {mount, withOptions} from 'react-mounter';
 import App from '../imports/ui/App.jsx';
 import Add from "../imports/ui/Add.jsx"
+import Nav from "../imports/ui/Nav.jsx";
+
+Meteor.startup(() => {
+  render(<Nav />, document.getElementById("header-target"));
+});
 
 const mount2 = withOptions({
-	rootId: 'render-target',
+	rootId: 'renderPage-target',
 }, mount);
 
 FlowRouter.route("/",{
@@ -14,11 +19,7 @@ FlowRouter.route("/",{
 		mount2(App)
 	}
 })
-FlowRouter.route("/Browse",{
-	action: function(params, queryParams) {
-		console.log("Yeah! We are on the post:"	);
-	}
-})
+
 FlowRouter.route("/add",{
 	action: function(params, queryParams) {
 		mount(Add)
