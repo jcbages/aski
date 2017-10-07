@@ -20,6 +20,10 @@ p {
 	margin-bottom: 1em;
 }
 
+#renderPage-target {
+	margin-top: 130px;
+}
+
 .Header {
 	/* FF3.6-15 */
 	background: -webkit-linear-gradient(top, black 0%, transparent 100%);
@@ -38,10 +42,6 @@ p {
 	width: 100vw;
 	box-sizing: border-box;
 	z-index: 5;
-}
-#render-target > div:nth-child(2) > div.sweet-alert > p
-{
-	display:none;
 }
 .pull-right {
 	float: none;

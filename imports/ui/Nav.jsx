@@ -79,7 +79,7 @@ class Navigation extends React.Component{
             <li>Top picks</li>
             {this.props.currentUser ?
               <div className="account pull-right">
-              <img src="/img/profile_placeholder.svg" class="profile-pic"/>
+              <img src="/img/profile_placeholder.svg" className="profile-pic"/>
               <div className="details">
               <p className="headline">Logged in as:</p>
               <p className="username text-primary">{this.props.currentUser.username}</p>
