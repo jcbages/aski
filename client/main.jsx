@@ -3,6 +3,7 @@ import { Meteor } from 'meteor/meteor';
 import { render } from 'react-dom';
 import {mount, withOptions} from 'react-mounter';
 import App from '../imports/ui/App.jsx';
+import Add from "../imports/ui/Add.jsx"
 import Nav from "../imports/ui/Nav.jsx";
 
 Meteor.startup(() => {

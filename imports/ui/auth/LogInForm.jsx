@@ -38,16 +38,11 @@ class LogInForm extends Component{
         this.props.error = error.reason;
       }
       else{
-        console.log(this.props.parent)
-        this.props.parent.setState({showPopup:false});
+        this.props.popup;
       }
     })
     
   }
-  handlePopup(){
-    this.props.popup();
-  }
-
 	render(){
 		return (
       <form>
@@ -57,6 +52,7 @@ class LogInForm extends Component{
         <div>
           Login
         </div>
+        <div>
         <TextField 
           hintText="Username"
           errorText={this.props.error}
@@ -70,6 +66,7 @@ class LogInForm extends Component{
           hintStyle={{color: "rgba(0,0,0,.26)",zIndex: "1",pointerEvents:"none",bottom: "10px",left: "5px"}} 
           onChange={this.onPasswordChange}
         />
+        </div>
         <RaisedButton label="Log In" secondary={true} onClick={this.handleLogIn.bind(this)}/>
   		</form>
     );

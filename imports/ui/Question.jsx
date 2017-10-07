@@ -18,7 +18,7 @@ export default class Question extends Component {
   render() {
     // Give tasks a different className when they are checked off,
     // so that we can style them nicely in CSS
-    const questionClassName = this.props.question.checked ? "checked" : "";
+    const questionClassName = "question"
 
     return(
       <li className={questionClassName}>
