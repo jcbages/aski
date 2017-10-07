@@ -3,6 +3,7 @@ import { Meteor } from 'meteor/meteor';
 import { render } from 'react-dom';
 import {mount, withOptions} from 'react-mounter';
 import App from '../imports/ui/App.jsx';
+import Add from "../imports/ui/Add.jsx"
 
 const mount2 = withOptions({
 	rootId: 'render-target',
@@ -13,8 +14,13 @@ FlowRouter.route("/",{
 		mount2(App)
 	}
 })
-FlowRouter.route('/blog/:postId', {
+FlowRouter.route("/Browse",{
 	action: function(params, queryParams) {
-		console.log("Yeah! We are on the post:", params.postId);
+		console.log("Yeah! We are on the post:"	);
 	}
-});
+})
+FlowRouter.route("/add",{
+	action: function(params, queryParams) {
+		mount(Add)
+	}
+})

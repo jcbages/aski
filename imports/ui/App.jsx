@@ -56,7 +56,7 @@ class Navigation extends React.Component{
       <div id="navigation" className="Navigation">
         <nav>
           <ul>
-            <li>Browse</li>
+            <li><a href="/Browse">Browse</a></li>
             <li>My Questions</li>
             <li>Top picks</li>
             {this.props.currentUser ?
@@ -135,7 +135,7 @@ class App extends Component {
 
   render() {
     console.log(this.props.currentUser);
-
+    
     return (
       <MuiThemeProvider muiTheme={getMuiTheme(darkBaseTheme)}>
         <div className = "container">

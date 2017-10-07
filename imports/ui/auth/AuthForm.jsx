@@ -28,7 +28,7 @@ class AuthForm extends Component{
           <SignUpForm popup = {this.props.popup} /> :
           <LogInForm popup = {this.props.popup} />
         }
-        <Toggle label={label} onToggle={this.onToggle} toggled={this.state.signUp} />
+        <Toggle onToggle={this.onToggle} toggled={this.state.signUp} />
       </div>
 		);
 	}

@@ -51,14 +51,10 @@ class SignUpForm extends Component{
         this.props.error = error.reason;
       }
       else{
-        this.props.parent.setState({showPopup:false});
+        this.props.popup;
       }
     });
   }
-  handlePopup(){
-    this.props.popup();
-  }
-
 	render(){
       console.log(this.props.parent);
 
