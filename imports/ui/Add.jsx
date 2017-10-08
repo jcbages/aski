@@ -18,7 +18,7 @@ const options = [
   { label: 'Peppermint', value: 'peppermint' },
 ];
 // Task component - represents a single todo item
-class Add extends Component {	
+class Add extends Component {
 
 constructor(props) {
     super(props);
@@ -33,19 +33,11 @@ constructor(props) {
     // Find the text field via the React ref
     const question = ReactDOM.findDOMNode(this.refs.question).value.trim();
     const description = ReactDOM.findDOMNode(this.refs.desc).value.trim();
-    const categories = this.state.value;
+
+    const categories = this.state.value.split(",");
     const options = ReactDOM.findDOMNode(this.refs.desc).value.trim();
-    Questions.insert({
-      question: question,
-      publishedAt: new Date(),
-      description:description,
-      categories:this.state.value.split(","),
-      ownerId:this.props.currentUser._id,
-      ownerName:this.props.currentUser.username,
-      rating:{},
-      options:[],
-      comments:[]
-    })
+
+    Meteor.call("questions.insert", question, description, categories, [])
 
     ReactDOM.findDOMNode(this.refs.question).value = "";
   }

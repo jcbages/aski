@@ -2,7 +2,6 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import ReactDOM from "react-dom";
 import { createContainer } from "meteor/react-meteor-data";
-import { Session } from "meteor/session";
 import {Meteor} from "meteor/meteor"
 ///////////
 // Header //
@@ -15,29 +14,9 @@ class Nav extends React.Component{
     e.preventDefault();
 
     // get the value
-    var val = $(".Search input").val();
-    Session.set("query", val);
-    $(".Search input").val("") ;
-  }
-  handleSubmit(event) {
-    event.preventDefault();
-
-    // Find the text field via the React ref
-    const text = ReactDOM.findDOMNode(this.refs.textInput).value.trim();
-
-    Questions.insert({
-      question: text,
-      publishedAt: new Date(), // current time
-    });
-
-    // Clear form
-    ReactDOM.findDOMNode(this.refs.textInput).value = "";
-  }
-
-  renderQuestions() {
-    return this.props.questions.map((question) => (
-      <Question key={question._id} question={question} />
-    ));
+    var query = $(".Search input").val();
+    query = {query:query}
+    FlowRouter.go("/questions", "" ,query);
   }
 
   render() {
@@ -107,7 +86,6 @@ class Search extends React.Component{
 }
 
 export default createContainer(() => {
-  Session.setDefault("query","");
   return {
     currentUser:Meteor.user(),
   };

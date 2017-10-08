@@ -7,7 +7,7 @@ body#bootstrap-overrides {
 }
 .container {
   max-width: 600px;
-  margin: 8% auto;
+  margin: 12% auto;
   min-height: 100%;
 }
 
@@ -119,7 +119,7 @@ form {
   margin-bottom: -10px;
   position: relative;
 }
- 
+
 .new-question input {
   box-sizing: border-box;
   padding: 10px 0;
@@ -129,7 +129,7 @@ form {
   padding-right: 80px;
   font-size: 1em;
 }
- 
+
 .new-question input:focus{
   outline: 0;
 }
