@@ -98,5 +98,24 @@ Meteor.methods({
       {_id:id, "options.name":options.name,"options.countries.countryCode":{$ne:options.countries.countryCode}},
       {$push: {"options.countries": {"countryCode":options.countries.countryCode, "countryName":options.countries.countryName,"count":1}}}
       )
+  },
+  "comments.voteUp"(id, comment){
+    if (! Meteor.userId()) {
+      throw new Meteor.Error('not-authorized');
+    }
+    Questions.update(
+      { _id: id, "comments.authorId": comment.authorId, "comments.createdAt": comment.createdAt},
+      {$inc: { "comments.$.rating.count":1},$inc: { "comments.$.rating.rating":1}}
+      )
+    
+  },
+  "comments.voteDown"(id, comment){
+    if (! Meteor.userId()) {
+      throw new Meteor.Error('not-authorized');
+    }
+    Questions.update(
+      { _id: id, "comments.authorId": comment.authorId, "comments.createdAt": comment.createdAt},
+      {$inc: { "comments.$.rating.count":1},$inc: { "comments.$.rating.rating":-1}}
+      )
   }
 });

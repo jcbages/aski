@@ -665,10 +665,10 @@ header .hide-completed {
     width:75%;display:flex;flex-direction:column;
 }
 .text > p:first-of-type{
-    width:100%;margin-top:0;margin-bottom:auto;line-height: 13px;font-size: 12px;
+    width:100%;margin-top:0;margin-bottom:auto;line-height: 13px;font-size: 12px;top:30%;position:relative;
 }
 .text > p:last-of-type{
-    width:100%;text-align:right;color:silver;margin-bottom:-7px;margin-top:auto;
+    width:100%;text-align:right;color:darkgray;margin-bottom:-7px;margin-top:auto;
 }
 .text-l{
     float:left;padding-right:10px;
@@ -702,15 +702,22 @@ header .hide-completed {
 .frame > div:last-of-type{
     position:relative;bottom:5px;width:100%;display:flex;
 }
-div.comment > ul {
+div.comments > ul {
     width:100%;
     list-style-type: none;
     padding:18px;
     position:relative;
-    bottom:32px;
     display:flex;
     flex-direction: column;
+    color:black;
 
+}
+div.comments > ul > li {
+	width:100%;
+    padding:18px;
+    display:flex;
+    flex-direction: column;
+    color:black;
 }
 .msj:before{
     width: 0;
@@ -725,7 +732,7 @@ div.comment > ul {
 }
 .msj-rta:after{
     width: 0;
-    height: 0;
+    height: 50px;
     content:"";
     top:-5px;
     left:14px;
@@ -765,4 +772,10 @@ input:focus{
 	padding:0px;
 	color:black;
 	position:relative;
+}
+
+#testBtnDown, #testBtn{
+	width:40px;
+	height:40px;
+	margin: 0 5px;
 }

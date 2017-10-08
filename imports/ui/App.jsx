@@ -128,9 +128,6 @@ class App extends Component {
           <SweetAlert
           title={<AuthForm popup={this.handlePopup.bind(this)}/>}
           style={{color:"grey"}}
-          onOutsideClick={()=>
-            this.setState({ showPopup: false })
-            }
           onConfirm={() => this.setState({ showPopup: false })} />
         : null
         }

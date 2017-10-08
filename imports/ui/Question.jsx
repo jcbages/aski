@@ -11,11 +11,13 @@ class Question extends Component {
 
   constructor(props) {
     super(props);
-
     this.state = {
       selectedOption:"",
-      rating:""
+      rating:"",
+      isUp:[],
+      pasos:[]
     }
+
   }
     //Meteor.call("questions.insert", rating, options, comments)
   handleSubmit(e){
@@ -47,6 +49,80 @@ class Question extends Component {
     selectedOption: changeEvent.target.value
   });
 }
+
+handleThumbsUp(comment,index, ev){
+  const id = this.props.question._id;
+  Meteor.call("comments.voteUp", id, comment);
+  let pasos = this.state.pasos;
+  pasos[index] = pasos[index] != undefined ? pasos[index] + 1 : 1;
+  this.setState({pasos:pasos});
+  if(pasos[index] == 0){
+    let isUp = this.state.isUp;
+    isUp[index] = undefined;
+    this.setState({isUp:isUp});
+  }
+  if(pasos[index] >= 1){
+    let isUp = this.state.isUp;
+    isUp[index] = true;
+    this.setState({isUp:isUp});
+  }
+}
+handleThumbsDown(comment,index, ev){
+  const id = this.props.question._id;
+  Meteor.call("comments.voteDown", id, comment);
+  let pasos = this.state.pasos;
+  pasos[index] = pasos[index] != undefined ? pasos[index] - 1 : -1;
+  this.setState({pasos:pasos});
+  if(pasos[index] == 0){
+    let isUp = this.state.isUp;
+    isUp[index] = undefined;
+    this.setState({isUp:isUp});
+  }
+  if(pasos[index] <=-1){
+    let isUp = this.state.isUp;
+    isUp[index] = false;
+    this.setState({isUp:isUp});
+  }
+}
+renderComments(){
+  const self = this;
+  return (
+    <ul>
+    {this.props.question.comments.map(function(comment, index){
+      const isUp = self.state.isUp[index];
+      console.log(isUp);
+    return(
+      <li style={{width:"100%"}}>
+        <div className="msj-rta macro">
+          <div className="text text-r">
+            <p>{comment.text}</p>
+            <p>
+              <small>{comment.createdAt.toLocaleString().split(',')[0]}</small>
+            </p>
+          </div>
+          <div className="avatar">
+          <p>
+            <small>{comment.authorName}</small>
+          </p>
+          </div>
+          <button type="button" 
+        id="testBtn" 
+        className="btn btn-success glyphicon glyphicon-thumbs-up" 
+        data-loading-text=" ... " onClick={(ev) =>self.handleThumbsUp(comment, index, ev)} disabled={isUp!=undefined ? isUp : false}>
+          </button>
+        <button type="button" id="testBtnDown" className="btn btn-success glyphicon glyphicon-thumbs-down" data-loading-text=" ... " onClick={(ev) =>self.handleThumbsDown(comment, index, ev)} disabled={isUp!=undefined ? !isUp : false}>
+        </button>
+        <div>
+          Puntos: {comment.rating.rating}
+        </div>
+        </div>
+        
+      </li>
+      )
+    })}
+    </ul>
+  )
+}
 handleRating(changeEvent) {
   this.setState({
     rating: parseInt(changeEvent.target.value)
@@ -54,13 +130,21 @@ handleRating(changeEvent) {
 }
   render() {
     const question = this.props.question;
+    const classes = `comments row`;
     const self = this;
     console.log(question);
     return(
       <div className="container">
         <form id="answerQuestion"></form>
         <div className="d-flex w-100 justify-content-between">
-          <h2 className="mb-1">{question.question}</h2>
+        <div className="row">
+          <div className="col-md-10">
+            <h2 className="mb-1">{question.question}</h2>
+          </div>
+          <div className="col-md-2">
+            <h3>{question.rating.rating}/5</h3>
+          </div>
+        </div>
           <small>{question.publishedAt.toString()}</small>
         </div>
         <p className="mb-1">{question.description}</p>
@@ -102,6 +186,9 @@ handleRating(changeEvent) {
         </div>
         <div className="row">
           <input className="answer" type="button" value="Answer" form="answerQuestion" onClick={this.handleSubmit.bind(this)} />  
+        </div>
+        <div className={classes}>
+          {this.renderComments()}
         </div>      
       </div>
 
