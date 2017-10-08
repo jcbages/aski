@@ -22,3 +22,4 @@ react-meteor-data@0.2.14
 session
 accounts-password
 kadira:flow-router
+fongandrew:find-and-modify

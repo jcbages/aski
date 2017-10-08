@@ -38,7 +38,7 @@ class LogInForm extends Component{
         this.props.error = error.reason;
       }
       else{
-        this.props.popup;
+        this.props.popup();
       }
     })
     

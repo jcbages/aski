@@ -6,8 +6,8 @@ import { Accounts } from "meteor/accounts-base";
 Meteor.startup(() => {
   // code to run on server at startup
   Accounts.onCreateUser((options, user) => {
-  	user.country = options.profile.country;
   	user.profile = {};
+  	user.profile['country'] = options.profile.country;
   	return user;
   })
 });

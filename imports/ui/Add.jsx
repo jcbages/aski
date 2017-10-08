@@ -52,6 +52,7 @@ constructor(props) {
       const name = ReactDOM.findDOMNode(this.refs.option).value.trim();
       Options.insert({
         name: name,
+        count:0,
         countries:[]
       })
       ReactDOM.findDOMNode(this.refs.option).value = "";
@@ -65,13 +66,6 @@ constructor(props) {
     return this.props.options.map((option)=>(
         <Option key={option._id} option={option}/>
       ));
-  }
-  renderQuestions() {
-    return this.props.questions.map((question) => (
-      <div>
-        <Question key={question._id} question={question} />
-      </div>
-    ));
   }
 
   render() {
@@ -117,11 +111,7 @@ constructor(props) {
               </div>
               <input type="button" value="Submit" form="saveQuestion" onClick={this.handleSubmit.bind(this)} />
               </div>
-          </header>
-          <h1> Questions: </h1>
-          <ul>
-            {this.renderQuestions()}
-          </ul>
+          </header>          
         </div>
     );
   }

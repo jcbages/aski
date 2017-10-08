@@ -51,13 +51,11 @@ class SignUpForm extends Component{
         this.props.error = error.reason;
       }
       else{
-        this.props.popup;
+        this.props.popup();
       }
     });
   }
 	render(){
-      console.log(this.props.parent);
-
 		return (
       <form>
         <button className="cancel" onClick={() => this.handlePopup()}>

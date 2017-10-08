@@ -49,6 +49,9 @@ if (Meteor.isServer) {
   Meteor.publish('questions.query', function(query) {
     return Questions.find({question:{$regex:".*" + query +".*"}});
   });
+  Meteor.publish('questions.id', function(id) {
+    return Questions.find({_id:{$regex:id}});
+  });
   Meteor.publish('questions', function() {
     return Questions.find();
   });
@@ -69,9 +72,31 @@ Meteor.methods({
       categories:categories,
       ownerId:Meteor.userId(),
       ownerName:Meteor.user().username,
-      rating:{},
+      rating:{rating:0,count:0},
       options:options,
       comments:[]
     })
+  },
+  'questions.answer'(id,rating, options,comments){
+    // Make sure the user is logged in before inserting a task
+    if (! Meteor.userId()) {
+      throw new Meteor.Error('not-authorized');
+    }
+    Questions.update({_id:id},{
+      $addToSet: {comments:comments }, 
+      $set: { rating: rating}
+    })
+    Questions.findAndModify({
+      query: { _id: id, options: { $elemMatch: { name: options.name} } },
+      update: { $inc: { "options.$.count": 1 } }
+    })
+    Questions.update(
+      { _id: id, "options.name": options.name, "options.countries.countryCode": options.countries.countryCode, "options.countries.countryName":options.countries.countryName},
+      { $inc: { "options.$.countries.0.count": 1 } }
+      )
+    Questions.update(
+      {_id:id, "options.name":options.name,"options.countries.countryCode":{$ne:options.countries.countryCode}},
+      {$push: {"options.countries": {"countryCode":options.countries.countryCode, "countryName":options.countries.countryName,"count":1}}}
+      )
   }
 });
