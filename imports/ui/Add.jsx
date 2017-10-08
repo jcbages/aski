@@ -1,15 +1,18 @@
 import React, { Component } from "react";
 import { Questions } from "../api/questions.js";
+import { Options } from "../api/options.js";
 import ReactDOM from "react-dom";
 import PropTypes from "prop-types";
 import Question from "./Question.jsx";
+import Option from "./Option.jsx";
 import { createContainer } from "meteor/react-meteor-data";
 import {Meteor} from "meteor/meteor"
 import Select from 'react-select';
 import "react-select/dist/react-select.css";
 
 
-const options = [
+
+const categories = [
   { label: 'Ciencia', value: 'ciencia' },
   { label: 'Vanilla', value: 'vanilla' },
   { label: 'Strawberry', value: 'strawberry' },
@@ -33,8 +36,6 @@ constructor(props) {
     // Find the text field via the React ref
     const question = ReactDOM.findDOMNode(this.refs.question).value.trim();
     const description = ReactDOM.findDOMNode(this.refs.desc).value.trim();
-    const categories = this.state.value;
-    const options = ReactDOM.findDOMNode(this.refs.desc).value.trim();
     Questions.insert({
       question: question,
       publishedAt: new Date(),
@@ -43,31 +44,51 @@ constructor(props) {
       ownerId:this.props.currentUser._id,
       ownerName:this.props.currentUser.username,
       rating:{},
-      options:[],
+      options:this.props.options,
       comments:[]
     })
-
     ReactDOM.findDOMNode(this.refs.question).value = "";
+    ReactDOM.findDOMNode(this.refs.desc).value = "";
+    this.setState({value:""});
+    this.props.options.map((option)=>{
+      Options.remove({_id:option._id});
+    })
+  }
+  handleOptions(e) {
+    if (e.key === 'Enter') {
+      const name = ReactDOM.findDOMNode(this.refs.option).value.trim();
+      Options.insert({
+        name: name,
+        countries:[]
+      })
+      ReactDOM.findDOMNode(this.refs.option).value = "";
+    }
   }
   handleChange(value) {
     console.log("Selected: " + JSON.stringify(value.split(",")));
     this.setState({ value });
   }
-
+  renderOptions(){
+    return this.props.options.map((option)=>(
+        <Option key={option._id} option={option}/>
+      ));
+  }
   renderQuestions() {
     return this.props.questions.map((question) => (
-      <Question key={question._id} question={question} />
+      <div>
+        <Question key={question._id} question={question} />
+      </div>
     ));
   }
 
   render() {
-    console.log(this.props)
     const { value } = this.state;
     return(
         <div className="container">
           <header>
             <h1>Ask Away!</h1>
-            <form className="new-question" onSubmit={this.handleSubmit.bind(this)} >
+            <form id="saveQuestion"></form>
+            <div className = "new-question">
               <input
                 type="text"
                 ref="question"
@@ -84,20 +105,27 @@ constructor(props) {
                   multi
                   closeOnSelect={false}
                   onChange={this.handleChange}
-                  options={options}
+                  options={categories}
                   placeholder="Select your categories"
                   simpleValue
                   value={value}
                 />
               </label>
-              <input
-                type="text"
-                ref="options"
-                placeholder="Options"
-              />
-              <input type="submit" value="Submit" />
-            </form>
+                <input
+                  type="text"
+                  onKeyPress={this.handleOptions.bind(this)}
+                  ref="option"
+                  placeholder="Type to add new options to your question"
+                />
+              <div class="row">
+                  <ul>
+                    {this.renderOptions()}
+                  </ul>
+              </div>
+              <input type="button" value="Submit" form="saveQuestion" onClick={this.handleSubmit.bind(this)} />
+              </div>
           </header>
+          <h1> Questions: </h1>
           <ul>
             {this.renderQuestions()}
           </ul>
@@ -108,10 +136,12 @@ constructor(props) {
 
 Add.propTypes = {
   questions: PropTypes.array.isRequired,
+  options:PropTypes.array
 };
 export default createContainer(() => {
   return {
     questions: Questions.find({}, { sort: { publishedAt: -1 }}).fetch(),
     currentUser:Meteor.user(),
+    options:Options.find({}).fetch()
   };
 }, Add);

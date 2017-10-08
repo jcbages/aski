@@ -3,6 +3,7 @@ import PropTypes from "prop-types";
 import ReactDOM from "react-dom";
 import { createContainer } from "meteor/react-meteor-data";
 import { Questions } from "../api/questions.js";
+import { Options } from "../api/options.js";
 import Question from "./Question.jsx";
 import { Session } from "meteor/session";
 import {Meteor} from "meteor/meteor"

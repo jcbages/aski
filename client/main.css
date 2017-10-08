@@ -114,7 +114,7 @@ p {
 .Logo:hover svg path {
 	fill: #ffffff !important;
 }
-form {
+.new-question {
   margin-top: 10px;
   margin-bottom: -10px;
   position: relative;
@@ -522,6 +522,11 @@ li.question {
   list-style: none;
   padding: 15px;
   border-bottom: #eee solid 1px;
+}
+li.option {
+  position: relative;
+  padding: 15px;
+  list-style:none;
 }
 .Select-single{
 	margin-top:5%;

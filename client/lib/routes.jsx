@@ -1,6 +1,7 @@
 import {mount, withOptions} from 'react-mounter';
 import App from '../../imports/ui/App.jsx';
 import QuestionList from "../../imports/ui/questions/QuestionList"
+import Add from "../../imports/ui/Add.jsx"
 
 const mount2 = withOptions({
 	rootId: 'renderPage-target',
@@ -33,3 +34,8 @@ FlowRouter.route("/questions", {
 		mount2(QuestionList, {questions:questions})
 	}
 });
+FlowRouter.route("/add",{
+	action: function(params, queryParams) {
+		mount(Add)
+	}
+})

@@ -43,4 +43,3 @@ const questionSchema = new SimpleSchema({
 });
 
 export const Questions = new Mongo.Collection("questions");
-
