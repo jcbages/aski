@@ -1,6 +1,8 @@
+import { Meteor } from 'meteor/meteor';
 import React, {Component} from "react";
-
+import {Questions} from '../../api/questions.js';
 import QuestionSummary from "./QuestionSummary";
+import {createContainer} from "meteor/react-meteor-data";
 
 class QuestionList extends Component {
 
@@ -18,7 +20,7 @@ class QuestionList extends Component {
 
 	render(){
 		return (
-			<div className="container-fluid">
+			<div className="container">
 				<div className="list-group">
 					{this.renderQuestions()}
 				</div>
@@ -27,4 +29,12 @@ class QuestionList extends Component {
 	}
 }
 
-export default QuestionList;
+export default createContainer(({query}) => {
+
+  Meteor.subscribe('questions.query', query)
+
+  return {
+    questions: Questions.find({}, {sort:{createdAt:-1}}).fetch(),
+    currentUser: Meteor.user(),
+  };
+}, QuestionList);

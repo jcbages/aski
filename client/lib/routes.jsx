@@ -9,33 +9,18 @@ const mount2 = withOptions({
 
 FlowRouter.route("/",{
 	action: function(params, queryParams) {
-		console.log("We are on the main page")
-		mount2(App)
+		mount(App)
 	}
 })
 
-FlowRouter.route("/questions", {
-	action: function(params, queryParams) {
-		console.log("Yeah! We are on the question list");
-		const exampleQuestion = {question:"Where should I go to a date?",
-							publishedAt:"2017/10/07 2:10 PM",
-							description:"It's my first date and I want to know where to go",
-							ownerName:"JavierTrc" };
-		const questions = [exampleQuestion,
-							exampleQuestion,
-							exampleQuestion,
-							exampleQuestion,
-							exampleQuestion,
-							exampleQuestion,
-							exampleQuestion,
-							exampleQuestion,
-							exampleQuestion,
-							exampleQuestion]
-		mount2(QuestionList, {questions:questions})
-	}
-});
 FlowRouter.route("/add",{
 	action: function(params, queryParams) {
 		mount(Add)
 	}
 })
+
+FlowRouter.route("/questions", {
+	action: function(params, queryParams) {
+		mount(QuestionList, {query:queryParams.query})
+	}
+});

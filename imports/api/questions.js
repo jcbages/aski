@@ -43,3 +43,32 @@ const questionSchema = new SimpleSchema({
 });
 
 export const Questions = new Mongo.Collection("questions");
+
+if (Meteor.isServer) {
+  // This code only runs on the server
+  Meteor.publish('questions.query', function(query) {
+    return Questions.find({question:{$regex:".*" + query +".*"}});
+  });
+}
+
+Meteor.methods({
+  'questions.insert'(question, description, categories, options) {
+
+    // Make sure the user is logged in before inserting a task
+    if (! Meteor.userId()) {
+      throw new Meteor.Error('not-authorized');
+    }
+
+    Questions.insert({
+      question: question,
+      publishedAt: new Date(),
+      description:description,
+      categories:categories,
+      ownerId:Meteor.userId(),
+      ownerName:Meteor.user().username,
+      rating:{},
+      options:options,
+      comments:[]
+    })
+  }
+});
