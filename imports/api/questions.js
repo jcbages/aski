@@ -49,6 +49,9 @@ if (Meteor.isServer) {
   Meteor.publish('questions.query', function(query) {
     return Questions.find({question:{$regex:".*" + query +".*"}});
   });
+  Meteor.publish('questions', function() {
+    return Questions.find();
+  });
 }
 
 Meteor.methods({

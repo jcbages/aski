@@ -21,7 +21,7 @@ const categories = [
   { label: 'Peppermint', value: 'peppermint' },
 ];
 // Task component - represents a single todo item
-class Add extends Component {
+class Add extends Component {	
 
 constructor(props) {
     super(props);
@@ -30,7 +30,7 @@ constructor(props) {
     this.handleSubmit = this.handleSubmit.bind(this);
   }
 
-  handleSubmit(event) {
+   handleSubmit(event) {
     event.preventDefault();
 
     // Find the text field via the React ref
@@ -132,9 +132,13 @@ Add.propTypes = {
   options:PropTypes.array
 };
 export default createContainer(() => {
+    Meteor.subscribe('questions');
+    Meteor.subscribe("options");
+
   return {
     questions: Questions.find({}, { sort: { publishedAt: -1 }}).fetch(),
     currentUser:Meteor.user(),
     options:Options.find({}).fetch()
+
   };
 }, Add);

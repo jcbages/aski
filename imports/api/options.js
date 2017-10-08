@@ -17,3 +17,10 @@ const optionSchema = new SimpleSchema({
 });
 
 export const Options = new Mongo.Collection("options");
+
+if (Meteor.isServer) {
+ 
+  Meteor.publish('options', function() {
+    return Options.find();
+  });
+}
