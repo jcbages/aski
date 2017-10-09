@@ -1,3 +1,4 @@
+import { Meteor } from 'meteor/meteor';
 import React, {Component} from "react";
 import PropTypes from "prop-types";
 
@@ -39,13 +40,15 @@ class SignUpForm extends Component{
     const username = this.user.username;
     const password = this.user.password;
     const country  = this.user.country;
-    Accounts.createUser({
-      username: username,
-      password: password,
+
+    const newUser = {
+      username: this.user.username,
+      password: this.user.password,
       profile: {
-        country: country
+        country:this.user.country
       }
-    },(err)=>{
+    }
+    Meteor.call("user.insert", newUser, (err, result) => {
       if(err){
         console.log(err);
         this.props.error = error.reason;
@@ -55,26 +58,26 @@ class SignUpForm extends Component{
       }
     });
   }
-	render(){
-		return (
+  render(){
+    return (
       <form>
         <button className="cancel" onClick={() => this.handlePopup()}>
           &times;
         </button>
         <div>Sign Up</div>
-        <TextField 
+        <TextField
           hintText="Username"
-          hintStyle={{color: "rgba(0,0,0,.26)",pointerEvents:"none",zIndex: "1",bottom: "10px",left: "5px"}} 
+          hintStyle={{color: "rgba(0,0,0,.26)",pointerEvents:"none",zIndex: "1",bottom: "10px",left: "5px"}}
           errorText={this.props.error}
           onChange={this.onUserChange}
         />
-        <TextField 
+        <TextField
           hintText="Password"
           type="password"
-          hintStyle={{color: "rgba(0,0,0,.26)",pointerEvents:"none",zIndex: "1",bottom: "10px",left: "5px"}} 
+          hintStyle={{color: "rgba(0,0,0,.26)",pointerEvents:"none",zIndex: "1",bottom: "10px",left: "5px"}}
           errorText={this.props.error}
           onChange={this.onPasswordChange}
-        />  
+        />
         <CountrySelect flagImagePath="/flags/" onSelect={this.onSelectCountry}/>
         <RaisedButton label="Sign In" secondary={true} onClick={this.handleSignUp.bind(this)}/>
   		</form>

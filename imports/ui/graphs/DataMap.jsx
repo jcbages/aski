@@ -17,18 +17,19 @@ export default class DataMap extends React.Component {
     const maxVal = Math.max(...dataValues);
     return d3.scale.linear().domain([minVal, maxVal]).range(["#EFEFFF","#02386F"])(value);
   }
-  redducedData(){
+  reducedData(){
     const newData = this.props.regionData.reduce((object, data) => {
+      const code = data.
       object[data.code] = { value: data.value, fillColor: this.linearPalleteScale(data.value) };
       return object;
     }, {});
-    return objectAssign({}, statesDefaults, newData);
+    return objectAssign({}, countryDefaults, newData);
   }
   renderMap(){
     return new Datamap({
       element: ReactDOM.findDOMNode(this),
       scope: 'world',
-      data: this.redducedData(),
+      data: this.reducedData(),
       geographyConfig: {
         borderWidth: 0.5,
         highlightFillColor: '#FFCC80',

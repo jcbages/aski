@@ -6,5 +6,6 @@ import Nav from "../imports/ui/Nav.jsx";
 
 Meteor.startup(() => {
   render(<Nav />, document.getElementById("header-target"));
+  Meteor.subscribe("users")
   Meteor.subscribe("Meteor.users.country");
 });
