@@ -25,7 +25,7 @@ class Add extends Component {
 
 constructor(props) {
     super(props);
-    this.state = {value:""}
+    this.state = {value:"",display:false, error:""}
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
   }
@@ -38,23 +38,42 @@ constructor(props) {
     const description = ReactDOM.findDOMNode(this.refs.desc).value.trim();
     const categories = this.state.value.split(",");
     const options = this.props.options;
+    if(options.length == 0){
+      this.setState({display:true, error:"Debe haber al menos una opción"});
+    }
+    else{
+    this.setState({display:false});
     Meteor.call("questions.insert", question, description, categories, options)
-
     ReactDOM.findDOMNode(this.refs.question).value = "";
     ReactDOM.findDOMNode(this.refs.desc).value = "";
     this.setState({value:""});
     this.props.options.map((option)=>{
       Options.remove({_id:option._id});
     })
+    window.alert("Se ha creado una nueva pregunta");
+    }
+   
   }
   handleOptions(e) {
     if (e.key === 'Enter') {
       const name = ReactDOM.findDOMNode(this.refs.option).value.trim();
+      var found = false;
+      this.props.options.map((option)=>{
+        if(option.name == name){
+          found = true;
+        }
+      })
+      if(!found){
+        this.setState({display:false})
       Options.insert({
         name: name,
         count:0,
         countries:[]
       })
+    }
+    else{
+      this.setState({display:true,error:"La opción ya está registrada"})
+    }
       ReactDOM.findDOMNode(this.refs.option).value = "";
     }
   }
@@ -98,13 +117,18 @@ constructor(props) {
                   value={value}
                 />
               </label>
-                <input
+                <input required
                   type="text"
                   onKeyPress={this.handleOptions.bind(this)}
                   ref="option"
-                  placeholder="Type to add new options to your question"
+                  placeholder="Add new options to your question (press enter to submit each option)"
                 />
-              <div class="row">
+                { this.state.display &&
+                  <div className="error">
+                    {this.state.error}
+                </div>
+                }
+              <div className="row">
                   <ul>
                     {this.renderOptions()}
                   </ul>
@@ -129,6 +153,5 @@ export default createContainer(() => {
     questions: Questions.find({}, { sort: { publishedAt: -1 }}).fetch(),
     currentUser:Meteor.user(),
     options:Options.find({}).fetch()
-
   };
 }, Add);

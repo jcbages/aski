@@ -127,8 +127,7 @@ class App extends Component {
         {this.state.showPopup ?
           <SweetAlert
           title={<AuthForm popup={this.handlePopup.bind(this)}/>}
-          style={{color:"grey"}}
-          onConfirm={() => this.setState({ showPopup: false })} />
+          style={{color:"grey"}} />
         : null
         }
       </MuiThemeProvider>
