@@ -50,7 +50,7 @@ if (Meteor.isServer) {
     return Questions.find({question:{$regex:".*" + query +".*"}});
   });
   Meteor.publish('questions.id', function(id) {
-    return Questions.find({_id:{$regex:id}});
+    return Questions.find({_id:id});
   });
   Meteor.publish('questions', function() {
     return Questions.find();
@@ -83,7 +83,7 @@ Meteor.methods({
       throw new Meteor.Error('not-authorized');
     }
     Questions.update({_id:id},{
-      $addToSet: {comments:comments }, 
+      $addToSet: {comments:comments },
       $set: { rating: rating}
     })
     Questions.findAndModify({
@@ -107,7 +107,7 @@ Meteor.methods({
       { _id: id, "comments.authorId": comment.authorId, "comments.createdAt": comment.createdAt},
       {$inc: { "comments.$.rating.count":1},$inc: { "comments.$.rating.rating":1}}
       )
-    
+
   },
   "comments.voteDown"(id, comment){
     if (! Meteor.userId()) {

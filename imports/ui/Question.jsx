@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import { Questions } from "../api/questions.js";
+
 import { createContainer } from "meteor/react-meteor-data";
 import { Mongo } from "meteor/mongo";
 import ReactDOM from "react-dom";
@@ -21,6 +22,7 @@ class Question extends Component {
   }
     //Meteor.call("questions.insert", rating, options, comments)
   handleSubmit(e){
+    console.log(this.props.currentUser)
     const question = this.props.question;
     const id = question._id;
     const text = ReactDOM.findDOMNode(this.refs.comment).value.trim();
@@ -34,7 +36,7 @@ class Question extends Component {
       createdAt: new Date(),
       rating: {rating:0,count:0}
     }
-    const country = this.props.currentUser.profile.country;
+    const country = this.props.currentUser.country;
     const countries = {countryCode:country.value, countryName:country.label};
     const options ={
       name: this.state.selectedOption,
@@ -105,9 +107,9 @@ renderComments(){
             <small>{comment.authorName}</small>
           </p>
           </div>
-          <button type="button" 
-        id="testBtn" 
-        className="btn btn-success glyphicon glyphicon-thumbs-up" 
+          <button type="button"
+        id="testBtn"
+        className="btn btn-success glyphicon glyphicon-thumbs-up"
         data-loading-text=" ... " onClick={(ev) =>self.handleThumbsUp(comment, index, ev)} disabled={isUp!=undefined ? isUp : false}>
           </button>
         <button type="button" id="testBtnDown" className="btn btn-success glyphicon glyphicon-thumbs-down" data-loading-text=" ... " onClick={(ev) =>self.handleThumbsDown(comment, index, ev)} disabled={isUp!=undefined ? !isUp : false}>
@@ -116,7 +118,7 @@ renderComments(){
           Puntos: {comment.rating.rating}
         </div>
         </div>
-        
+
       </li>
       )
     })}
@@ -177,19 +179,19 @@ handleRating(changeEvent) {
         </div>
         <div className="comment">
             <div>
-                <div className="msj-rta macro" style={{margin:"auto"}}>                        
+                <div className="msj-rta macro" style={{margin:"auto"}}>
                     <div className="text text-r">
                         <input className="mytext" ref="comment" placeholder="Optional comment about the question"/>
-                    </div> 
+                    </div>
                 </div>
             </div>
         </div>
         <div className="row">
-          <input className="answer" type="button" value="Answer" form="answerQuestion" onClick={this.handleSubmit.bind(this)} />  
+          <input className="answer" type="button" value="Answer" form="answerQuestion" onClick={this.handleSubmit.bind(this)} />
         </div>
         <div className={classes}>
           {this.renderComments()}
-        </div>      
+        </div>
       </div>
 
     );
@@ -198,10 +200,10 @@ handleRating(changeEvent) {
 
 export default createContainer(({id}) => {
 
-  Meteor.subscribe('questions')
+  Meteor.subscribe('questions.id',id)
 
   return {
     question: Questions.findOne({_id:id}),
-    currentUser: Meteor.user(),
+    currentUser: Meteor.user()
   };
 }, Question);

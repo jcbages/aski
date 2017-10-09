@@ -27,6 +27,7 @@ FlowRouter.route("/questions", {
 });
 FlowRouter.route("/question/:id", {
 	action: function(params, queryParams) {
+		console.log(params.id)
 		mount(Question, {id:params.id})
 	}
 });
