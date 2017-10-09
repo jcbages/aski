@@ -36,7 +36,7 @@ export default class DataMapContainer extends React.Component {
   	return options.map((d,i)=>{
   		return (
   			<Tab label={d.name} value={i} key={i}>
-  				<DataMap regionData={d.countries} />
+  				<DataMap regionData={d.countries} index={i}/>
   			</Tab>
   		);
   	})
@@ -44,7 +44,7 @@ export default class DataMapContainer extends React.Component {
 
   render() {
     return (
-    	<MuiThemeProvider>
+    	<MuiThemeProvider muiTheme={getMuiTheme(darkBaseTheme)}>
         <Tabs
           value={this.state.value}
           onChange={this.handleChange}

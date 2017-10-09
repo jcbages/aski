@@ -11,11 +11,13 @@ export default class DataMap extends React.Component {
   constructor(props){
     super(props);
     this.datamap = null;
+    this.linearPalleteScale = this.linearPalleteScale.bind(this);
   }
   linearPalleteScale(value){
     const dataValues = this.props.regionData.map(function(data) { return data.count });
-    const minVal = Math.min(...dataValues);
+    const minVal = 0;
     const maxVal = Math.max(...dataValues);
+
     return d3.scaleLinear().domain([minVal, maxVal]).range(["#FFFFFF","#0000FF"])(value);
   }
   reducedData(){
@@ -32,7 +34,7 @@ export default class DataMap extends React.Component {
       element: ReactDOM.findDOMNode(this),
       scope: 'world',
       fills:{
-        defaultFills:"white"
+        defaultFill:"white"
       },
       data: this.reducedData(),
       geographyConfig: {
@@ -54,11 +56,9 @@ export default class DataMap extends React.Component {
     document.body.clientWidth;
   }
   componentDidMount(){
-    const mapContainer = d3.select('#datamap-container');
+    const mapContainer = d3.select('#datamap-container-' + this.props.index);
     const initialScreenWidth = this.currentScreenWidth();
-    const containerWidth = (initialScreenWidth < 600) ?
-    { width: initialScreenWidth + 'px',  height: (initialScreenWidth * 0.5625) + 'px' } :
-    { width: '600px', height: '350px' }
+    const containerWidth = { width: '600px', height: '350px' }
 
     mapContainer.style(containerWidth);
     this.datamap = this.renderMap();
@@ -90,8 +90,11 @@ export default class DataMap extends React.Component {
     d3.select('svg').remove();
   }
   render() {
+    var style = {
+      color:"black"
+    }
     return (
-      <div id="datamap-container"></div>
+      <div id={"datamap-container-" + this.props.index} style={style}></div>
       );
   }
 }
