@@ -15,7 +15,6 @@ export default class PieChart extends React.Component {
     let data = [];
     let colors = [];
     this.props.options.map((option, index)=> {
-      console.log(option);
       labels.push(option.name);
       data.push(option.count);
       colors.push('#'+Math.floor(Math.random()*16777215).toString(16));

@@ -10,9 +10,29 @@ export default class BarChart extends React.Component {
       data:{}
     }
   }
+  ColorLuminance(hex, lum) {
+
+  // validate hex string
+  hex = String(hex).replace(/[^0-9a-f]/gi, '');
+  if (hex.length < 6) {
+    hex = hex[0]+hex[0]+hex[1]+hex[1]+hex[2]+hex[2];
+  }
+  lum = lum || 0;
+
+  // convert to decimal and change luminosity
+  var rgb = "#", c, i;
+  for (i = 0; i < 3; i++) {
+    c = parseInt(hex.substr(i*2,2), 16);
+    c = Math.round(Math.min(Math.max(0, c + (c * lum)), 255)).toString(16);
+    rgb += ("00"+c).substr(c.length);
+  }
+
+  return rgb;
+}
   componentWillMount(){
     let labels = [];
     let data = [];
+    let color = '#'+Math.floor(Math.random()*16777215).toString(16);
     this.props.options.map((option, index)=> {
       console.log(option);
       labels.push(option.name);
@@ -23,12 +43,11 @@ export default class BarChart extends React.Component {
       datasets: [{
         data: data,
         label: 'Respuestas',
-        backgroundColor: 'rgba(255,99,132,0.2)',
-        borderColor: 'rgba(255,99,132,1)',
+        backgroundColor: this.ColorLuminance(color,0.2),
+        borderColor: this.ColorLuminance(color,1),
         borderWidth: 1,
-        hoverBackgroundColor: 'rgba(255,99,132,0.4)',
-        hoverBorderColor: 'rgba(255,99,132,1)',
-
+        hoverBackgroundColor: this.ColorLuminance(color,0.4),
+        hoverBorderColor: this.ColorLuminance(color,1),
       }]
     }
   });
