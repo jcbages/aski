@@ -77,7 +77,7 @@ Meteor.methods({
       comments:[]
     })
   },
-  'questions.answer'(id,rating, options,comments){
+  'questions.answer'(id,rating, options,comments, found){
     // Make sure the user is logged in before inserting a task
     if (! Meteor.userId()) {
       throw new Meteor.Error('not-authorized');
@@ -90,14 +90,18 @@ Meteor.methods({
       query: { _id: id, options: { $elemMatch: { name: options.name} } },
       update: { $inc: { "options.$.count": 1 } }
     })
+    if(found){
     Questions.update(
-      { _id: id, "options.name": options.name, "options.countries.countryCode": options.countries.countryCode, "options.countries.countryName":options.countries.countryName},
-      { $inc: { "options.$.countries.0.count": 1 } }
+      { _id: id, "options.name":options.name, "options.countries.countryCode":options.countries.countryCode},
+      { $inc: { "options.$.countries.0.count": 1 }}
       )
+    }
+    else{
     Questions.update(
-      {_id:id, "options.name":options.name,"options.countries.countryCode":{$ne:options.countries.countryCode}},
-      {$push: {"options.countries": {"countryCode":options.countries.countryCode, "countryName":options.countries.countryName,"count":1}}}
+      {_id:id, "options.name":options.name,"options.$.countries.countryCode":{$ne:options.countries.countryCode}},
+      {$push: {"options.$.countries": {"countryCode":options.countries.countryCode, "countryName":options.countries.countryName,"count":1}}}
       )
+  }
   },
   "comments.voteUp"(id, comment){
     if (! Meteor.userId()) {

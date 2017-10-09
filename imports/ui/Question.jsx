@@ -42,9 +42,20 @@ class Question extends Component {
       name: this.state.selectedOption,
       countries:countries,
     }
+    let found = false;
+    question.options.map((option)=>{
+      if(option.name == options.name){
+        option.countries.map((cnt)=>{
+          if(cnt.countryCode == country.value){
+            found = true;
+          }
+        })
+      }
+    })
+    console.log(found);
     console.log(rating,options,comments);
     ReactDOM.findDOMNode(this.refs.comment).value = "";
-    Meteor.call("questions.answer", id, rating, options, comments)
+    Meteor.call("questions.answer", id, rating, options, comments, found)
 }
   handleOptionChange(changeEvent) {
   this.setState({
@@ -92,7 +103,6 @@ renderComments(){
     <ul>
     {this.props.question.comments.map(function(comment, index){
       const isUp = self.state.isUp[index];
-      console.log(isUp);
     return(
       <li style={{width:"100%"}}>
         <div className="msj-rta macro">
