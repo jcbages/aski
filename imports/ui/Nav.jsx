@@ -55,18 +55,20 @@ class Navigation extends React.Component{
       <div id="navigation" className="Navigation">
         <nav>
           <ul>
-            <li>Browse</li>
-            <li>My Questions</li>
-            <li>Top picks</li>
+            <li onClick={()=>{FlowRouter.go("/questions")}}>Browse</li>
             {this.props.currentUser ?
-              <div className="account pull-right">
-              <img src="/img/profile_placeholder.svg" className="profile-pic"/>
-              <div className="details">
-              <p className="headline">Logged in as:</p>
-              <p className="username text-primary">{this.props.currentUser.username}</p>
-              </div>
-              <li className="logout" onClick={() => Meteor.logout()}>Log Out</li>
-              </div>
+              <li onClick={()=>{FlowRouter.go("/add")}}>Add Question</li>
+              : ""
+            }
+            {this.props.currentUser ?
+                <div className="account pull-right">
+                <img src="/img/profile_placeholder.svg" className="profile-pic"/>
+                <div className="details">
+                <p className="headline">Logged in as:</p>
+                <p className="username text-primary">{this.props.currentUser.username}</p>
+                </div>
+                <li className="logout" onClick={() => Meteor.logout()}>Log Out</li>
+                </div>
               : ""
             }
           </ul>

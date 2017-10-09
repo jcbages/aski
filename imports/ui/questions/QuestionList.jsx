@@ -31,10 +31,15 @@ class QuestionList extends Component {
 
 export default createContainer(({query}) => {
 
-  Meteor.subscribe('questions.query', query)
+  if(query){
+    Meteor.subscribe('questions.query', query)
+  }
+  else{
+    Meteor.subscribe('questions')
+  }
 
   return {
-    questions: Questions.find({}, {sort:{createdAt:-1}}).fetch(),
-    currentUser: Meteor.user(),
+	questions: Questions.find({}, {sort:{createdAt:-1}}).fetch(),
+	currentUser: Meteor.user(),
   };
 }, QuestionList);
