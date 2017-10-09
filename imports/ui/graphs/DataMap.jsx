@@ -1,9 +1,10 @@
-import d3 from 'd3';
+import * as d3 from "d3";
 import topojson from 'topojson';
 import Datamap from 'datamaps/dist/datamaps.world.min'
 import React from 'react';
 import ReactDOM from 'react-dom';
 import countryDefaults from '../../extras/countryDefaults';
+import countryCodeDict from "../../extras/countryCodeConversion";
 import objectAssign from 'object-assign';
 
 export default class DataMap extends React.Component {
@@ -12,23 +13,27 @@ export default class DataMap extends React.Component {
     this.datamap = null;
   }
   linearPalleteScale(value){
-    const dataValues = this.props.regionData.map(function(data) { return data.value });
+    const dataValues = this.props.regionData.map(function(data) { return data.count });
     const minVal = Math.min(...dataValues);
     const maxVal = Math.max(...dataValues);
-    return d3.scale.linear().domain([minVal, maxVal]).range(["#EFEFFF","#02386F"])(value);
+    return d3.scaleLinear().domain([minVal, maxVal]).range(["#FFFFFF","#0000FF"])(value);
   }
   reducedData(){
     const newData = this.props.regionData.reduce((object, data) => {
-      const code = data.
-      object[data.code] = { value: data.value, fillColor: this.linearPalleteScale(data.value) };
+      const code = countryCodeDict[data.countryCode]
+      object[code] = { value: data.count, fillColor: this.linearPalleteScale(data.count) };
       return object;
     }, {});
-    return objectAssign({}, countryDefaults, newData);
+
+    return newData;
   }
   renderMap(){
     return new Datamap({
       element: ReactDOM.findDOMNode(this),
       scope: 'world',
+      fills:{
+        defaultFills:"white"
+      },
       data: this.reducedData(),
       geographyConfig: {
         borderWidth: 0.5,
@@ -79,7 +84,7 @@ export default class DataMap extends React.Component {
     });
   }
   componentDidUpdate(){
-    this.datamap.updateChoropleth(this.redducedData());
+    this.datamap.updateChoropleth(this.reducedData());
   }
   componentWillUnmount(){
     d3.select('svg').remove();

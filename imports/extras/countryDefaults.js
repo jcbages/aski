@@ -1,6 +1,6 @@
 const defaultFill = '#f2f2f2';
 
-export default const countryDefaults = {
+export default countryDefaults = {
     "AF":{
         fillColor: defaultFill,
         value: ""

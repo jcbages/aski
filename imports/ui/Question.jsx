@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import { Questions } from "../api/questions.js";
+import DataMapContainer from "./graphs/DataMapContainer";
 
 import { createContainer } from "meteor/react-meteor-data";
 import { Mongo } from "meteor/mongo";
@@ -178,6 +179,7 @@ handleRating(changeEvent) {
           )}
           </ul>
         </div>
+        <DataMapContainer options={question.options} />
         <div className="row">
         <fieldset className="rating">
           <input onChange={self.handleRating.bind(self)} type="radio" id="star5" name="rating" value="5" /><label htmlFor="star5" title="Rocks!">5 stars</label>
