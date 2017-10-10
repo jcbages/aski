@@ -49,12 +49,14 @@ class SignUpForm extends Component{
       }
     }
     Meteor.call("user.insert", newUser, (err, result) => {
+      console.log(username)
+      console.log(password)
       if(err){
         console.log(err);
         this.props.error = error.reason;
       }
       else{
-        Meteor.loginWithPassword(newUser.username, newUser.password)
+        Meteor.loginWithPassword(username,password)
         this.props.popup();
     
       }
