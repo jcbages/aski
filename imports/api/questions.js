@@ -77,7 +77,7 @@ Meteor.methods({
       comments:[]
     })
   },
-  'questions.answer'(id,rating, options,comments, found){
+  'questions.answer'(id,rating, options,comments, found, idOption, idCountry){
     // Make sure the user is logged in before inserting a task
     if (! Meteor.userId()) {
       throw new Meteor.Error('not-authorized');
@@ -90,10 +90,14 @@ Meteor.methods({
       query: { _id: id, options: { $elemMatch: { name: options.name} } },
       update: { $inc: { "options.$.count": 1 } }
     })
+    var find = "options." + idOption + ".countries." + idCountry + ".count";
+    var obj={};
+    obj[find] = 1; 
+    console.log(obj);
     if(found){
     Questions.update(
-      { _id: id, "options.name":options.name, "options.countries.countryCode":options.countries.countryCode},
-      { $inc: { "options.$.countries.0.count": 1 }}
+      { _id: id},
+      { $inc: obj}
       )
     }
     else{

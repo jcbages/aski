@@ -46,24 +46,31 @@ class Question extends Component {
       rating: {rating:0,count:0}
     }
     const country = this.props.currentUser.country;
+    let indexOption = 0;
     const countries = {countryCode:country.value, countryName:country.label};
+    this.props.question.options.map((option,index)=>{
+      if(option.name == this.state.selectedOption){
+        indexOption = index;
+      }
+    })
     const options ={
       name: this.state.selectedOption,
-      countries:countries,
+      countries:countries
     }
     let found = false;
+    let indexCountry =0;
     question.options.map((option)=>{
       if(option.name == options.name){
-        option.countries.map((cnt)=>{
+        option.countries.map((cnt,index)=>{
           if(cnt.countryCode == country.value){
             found = true;
+            indexCountry = index;
           }
         })
       }
     })
-    console.log(rating,options,comments);
     ReactDOM.findDOMNode(this.refs.comment).value = "";
-    Meteor.call("questions.answer", id, rating, options, comments, found)
+    Meteor.call("questions.answer", id, rating, options, comments, found, indexOption, indexCountry)
 }
   handleOptionChange(changeEvent) {
   this.setState({
