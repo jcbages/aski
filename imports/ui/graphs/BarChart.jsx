@@ -32,7 +32,7 @@ export default class BarChart extends React.Component {
   componentWillMount(){
     let labels = [];
     let data = [];
-    let color = '#'+Math.floor(Math.random()*16777215).toString(16);
+    let color = "#ff6384";
     this.props.options.map((option, index)=> {
       console.log(option);
       labels.push(option.name);
@@ -56,9 +56,15 @@ export default class BarChart extends React.Component {
   render() {
     var width = 700,
     height = 300,
-    title = "Options";   
+    title = "Options";  
+    let data = [];
+    let datos = this.state.data;
+    this.props.options.map((option, index)=> {
+      data.push(option.count);
+    })
+    datos.datasets[0].data = data;
     return (
-      <Bar data={this.state.data} />
+      <Bar data={datos} />
       );
   }
 

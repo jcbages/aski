@@ -6,9 +6,6 @@ import ReactDOM from 'react-dom';
 export default class PieChart extends React.Component {
   constructor(props){
     super(props);
-    this.state = {
-      data:{}
-    }
   }
   componentWillMount(){
     let labels = [];
@@ -33,9 +30,17 @@ export default class PieChart extends React.Component {
   render() {
     var width = 700,
     height = 300,
-    title = "Options";   
+    title = "Options";
+    let labels = this.state.data.labels;
+    let colors = this.state.data.datasets[0].backgroundColor;
+    let data = [];
+    let datos = this.state.data;
+    this.props.options.map((option, index)=> {
+      data.push(option.count);
+    })
+    datos.datasets[0].data = data;
     return (
-      <Pie data={this.state.data} />
+      <Pie data={datos} />
       );
   }
 
