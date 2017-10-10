@@ -96,6 +96,7 @@ class App extends Component {
     this.state = {
       showPopup: false
     };
+    this.handlePopup = this.handlePopup.bind(this);
   }
 
   handlePopup(ev){
@@ -107,18 +108,18 @@ class App extends Component {
 
   render() {
     console.log(this.props.currentUser);
-    
+    let self = this;
     return (
       <MuiThemeProvider muiTheme={getMuiTheme(darkBaseTheme)}>
         <div className = "container">
           <div id="hero" className="Hero" style={{backgroundImage: "url(/background.jpg)"}}>
             <div className="content">
 
-              <h1> Pregunta lo que quieras, cuando quieras</h1>
-              <p>Con Aski puedes preguntar y responder cientos de preguntas de todas partes del mundo. Solo create una cuenta y accede a la mejor red de preguntas.</p>
+              <h1> Ask whatever you want, whenever you want</h1>
+              <p>With Aski you can ask and answer tons of questions of all around the world. Just create an account and access the best question network!</p>
 
               {!this.props.currentUser ?
-                <RaisedButton  onClick={this.handlePopup.bind(this)}>Sign In / Login</RaisedButton> : null
+                <RaisedButton  onClick={self.handlePopup}>Sign In / Login</RaisedButton> : null
               }
             </div>
             <div className="overlay"></div>
@@ -126,8 +127,11 @@ class App extends Component {
         </div>
         {this.state.showPopup ?
           <SweetAlert
-          title={<AuthForm popup={this.handlePopup.bind(this)}/>}
-          style={{color:"grey"}} />
+          title={<AuthForm popup={self.handlePopup}/>}
+          style={{color:"grey"}}
+          showConfirmButton= {false} // There won't be any confirm button
+          onConfirm={this.handlePopup.bind(this)}
+        />
         : null
         }
       </MuiThemeProvider>

@@ -8,16 +8,24 @@ class AuthForm extends Component{
 	constructor(props){
 		super(props);
 		this.state= {
-			signUp:true
+			signUp:false,
+			text:"Not signed up? Click here."
 		};
-		this.onToggle = this.onToggle.bind(this);
+		this.onClick = this.onClick.bind(this);
 	}
 
-	onToggle(event, toggleVal){
+	onClick(event, toggleVal){
 		event.preventDefault();
+		
 		this.setState({
-			signUp:!this.state.signUp
+			signUp:!this.state.signUp,
 		});
+		if(this.state.signup){
+			this.setState({text:"Not signed up? Click here."})
+		}
+		else{
+			this.setState({text:"Already signed up? Login here."})
+		}
 	}
 
 	render(){
@@ -28,7 +36,7 @@ class AuthForm extends Component{
           <SignUpForm popup = {this.props.popup} /> :
           <LogInForm popup = {this.props.popup} />
         }
-        <Toggle onToggle={this.onToggle} toggled={this.state.signUp} />
+        <a href="" onClick={this.onClick} ><h5> {this.state.text} </h5></a>
       </div>
 		);
 	}

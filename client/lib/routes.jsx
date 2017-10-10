@@ -1,6 +1,7 @@
 import {mount, withOptions} from 'react-mounter';
 import App from '../../imports/ui/App.jsx';
 import QuestionList from "../../imports/ui/questions/QuestionList"
+import MyQuestionsList from "../../imports/ui/questions/MyQuestionsList"
 import Add from "../../imports/ui/Add.jsx"
 import Question from "../../imports/ui/Question.jsx"
 
@@ -27,7 +28,11 @@ FlowRouter.route("/questions", {
 });
 FlowRouter.route("/question/:id", {
 	action: function(params, queryParams) {
-		console.log(params.id)
 		mount(Question, {id:params.id})
+	}
+});
+FlowRouter.route("/myQuestions", {
+	action: function(params, queryParams) {
+		mount(MyQuestionsList, {idUser:queryParams.idUser}) 
 	}
 });

@@ -46,7 +46,7 @@ class LogInForm extends Component{
 	render(){
 		return (
       <form>
-        <button className="cancel" onClick={() => this.handlePopup()}>
+        <button className="cancel" onClick={() => this.props.popup()}>
           &times;
         </button>
         <div>
@@ -67,7 +67,7 @@ class LogInForm extends Component{
           onChange={this.onPasswordChange}
         />
         </div>
-        <RaisedButton label="Log In" secondary={true} onClick={this.handleLogIn.bind(this)}/>
+        <RaisedButton label="Log In" style={{margin:"5px 0"}} secondary={true} onClick={this.handleLogIn.bind(this)}/>
   		</form>
     );
 	}

@@ -54,14 +54,16 @@ class SignUpForm extends Component{
         this.props.error = error.reason;
       }
       else{
+        Meteor.loginWithPassword(newUser.username, newUser.password)
         this.props.popup();
+    
       }
     });
   }
   render(){
     return (
       <form>
-        <button className="cancel" onClick={() => this.handlePopup()}>
+        <button className="cancel" onClick={() => this.props.popup()}>
           &times;
         </button>
         <div>Sign Up</div>
@@ -79,7 +81,7 @@ class SignUpForm extends Component{
           onChange={this.onPasswordChange}
         />
         <CountrySelect flagImagePath="/flags/" onSelect={this.onSelectCountry}/>
-        <RaisedButton label="Sign In" secondary={true} onClick={this.handleSignUp.bind(this)}/>
+        <RaisedButton style={{margin:"5px 0"}} label="Sign In" secondary={true} onClick={this.handleSignUp.bind(this)}/>
   		</form>
     );
 	}

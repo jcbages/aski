@@ -4,7 +4,7 @@ import {Questions} from '../../api/questions.js';
 import QuestionSummary from "./QuestionSummary";
 import {createContainer} from "meteor/react-meteor-data";
 
-class QuestionList extends Component {
+class MyQuestionsList extends Component {
 
 	constructor(props){
 		super(props);
@@ -19,9 +19,8 @@ class QuestionList extends Component {
 		);
 		else
 			return(
-				<div><h2> Apparently there are no questions yet :( </h2><br/>
+				<div><h2> Apparently you have no questions yet :( </h2><br/>
 				{this.props.currentUser && <div><p> Go to 'Add Question' to add a new question </p></div>}
-				{(this.props.currentUser == undefined || this.props.currentUser == null) && <p> Sign up or login to add a new question!</p> }
 
 
 				</div> 
@@ -39,16 +38,10 @@ class QuestionList extends Component {
 	}
 }
 
-export default createContainer(({query}) => {
-  if(query){
-    Meteor.subscribe('questions.query', query)
-  }
-  else{
-    Meteor.subscribe('questions')
-  }
-
+export default createContainer(({idUser}) => { 
+  Meteor.subscribe('questions.myself', idUser)
   return {
 	questions: Questions.find({}, {sort:{"rating.rating":-1}}).fetch(),
 	currentUser: Meteor.user(),
   };
-}, QuestionList);
+}, MyQuestionsList);

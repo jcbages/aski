@@ -6,23 +6,27 @@ class QuestionSummary extends Component {
 		super(props);
 	}
 	goToQuestion(e) {
-    // stop form from submitting
-    e.preventDefault();
-    var params = {id:this.props.question._id}
-    FlowRouter.go("/question/" + this.props.question._id);
+
+    FlowRouter.go("question/" + this.props.question._id);
+
   }
 	render(){
 
     const question = this.props.question;
-
+    const route = "question/" + this.props.question._id;
 		return (
-			<a href="" className="list-group-item list-group-item-action flex-column align-items-start"	onClick={this.goToQuestion.bind(this)}>
+			<a href={route} className="list-group-item list-group-item-action flex-column align-items-start">
 				<div className="d-flex w-100 justify-content-between">
 			      <h5 className="mb-1">{question.question}</h5>
+			      <div className="panel-heading right">{question.rating.rating}/5</div>
 			      <small>{question.publishedAt.toLocaleString().split(',')[0]}</small>
+
 			    </div>
 		    	<p className="mb-1">{question.description}</p>
-        		<small>By {question.ownerName}</small>
+        		<small className="owner">By {question.ownerName}</small>
+        		{question.categories.map((category)=>{
+                          return (<span className="label label-default right">{category}</span>) 
+                        })}
 			</a>
 		);
 	}

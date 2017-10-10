@@ -47,14 +47,18 @@ export const Questions = new Mongo.Collection("questions");
 if (Meteor.isServer) {
   // This code only runs on the server
   Meteor.publish('questions.query', function(query) {
-    return Questions.find({question:{$regex:".*" + query +".*"}});
+    return Questions.find({$or:[{question:{$regex:".*" + query +".*"}},{categories:{$regex:".*" + query + ".*"}}]});
   });
   Meteor.publish('questions.id', function(id) {
-    return Questions.find({_id:id});
+    return Questions.find({_id:{$regex:".*" + id +".*"}});
   });
   Meteor.publish('questions', function() {
-    return Questions.find();
+    return Questions.find({});
   });
+   Meteor.publish('questions.myself', function(id) {
+    return Questions.find({ownerId:{$regex:".*" + id +".*"}});
+  });
+
 }
 
 Meteor.methods({
@@ -72,7 +76,7 @@ Meteor.methods({
       categories:categories,
       ownerId:Meteor.userId(),
       ownerName:Meteor.user().username,
-      rating:{rating:0,count:0},
+      rating:{rating:3.5,count:0},
       options:options,
       comments:[]
     })

@@ -62,32 +62,12 @@ export default class DataMap extends React.Component {
 
     mapContainer.style(containerWidth);
     this.datamap = this.renderMap();
-    window.addEventListener('resize', () => {
-      const currentScreenWidth = this.currentScreenWidth();
-      const mapContainerWidth = mapContainer.style('width');
-      if (this.currentScreenWidth() > 600 && mapContainerWidth !== '600px') {
-        d3.select('svg').remove();
-        mapContainer.style({
-          width: '600px',
-          height: '350px'
-        });
-        this.datamap = this.renderMap();
-      }
-      else if (this.currentScreenWidth() <= 600) {
-        d3.select('svg').remove();
-        mapContainer.style({
-          width: currentScreenWidth + 'px',
-          height: (currentScreenWidth * 0.5625) + 'px'
-        });
-        this.datamap = this.renderMap();
-      }
-    });
   }
   componentDidUpdate(){
     this.datamap.updateChoropleth(this.reducedData());
   }
   componentWillUnmount(){
-    d3.select('svg').remove();
+    d3.select('svg.datamap').remove();
   }
   render() {
     var style = {

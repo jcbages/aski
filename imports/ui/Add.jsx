@@ -13,12 +13,11 @@ import "react-select/dist/react-select.css";
 
 
 const categories = [
-  { label: 'Ciencia', value: 'ciencia' },
-  { label: 'Vanilla', value: 'vanilla' },
-  { label: 'Strawberry', value: 'strawberry' },
-  { label: 'Caramel', value: 'caramel' },
-  { label: 'Cookies and Cream', value: 'cookiescream' },
-  { label: 'Peppermint', value: 'peppermint' },
+  { label: 'Academic', value: 'academic' },
+  { label: 'Self improvement', value: 'simprov' },
+  { label: 'Social', value: 'social' },
+  { label: 'Hobbies', value: 'hobbies' },
+  { label: 'Other', value: 'other' },
 ];
 // Task component - represents a single todo item
 class Add extends Component {	
@@ -50,7 +49,7 @@ constructor(props) {
     this.props.options.map((option)=>{
       Options.remove({_id:option._id});
     })
-    window.alert("Se ha creado una nueva pregunta");
+    window.alert("A new question has been added");
     }
    
   }
@@ -90,21 +89,29 @@ constructor(props) {
   render() {
     const { value } = this.state;
     return(
-        <div className="container">
+        <div className="container" id="add">
           <header>
-            <h1>Ask Away!</h1>
+            <h1 className="titleAsk">Ask Away!</h1>
             <form id="saveQuestion"></form>
             <div className = "new-question">
+              <div className="form-group">
+              <label htmlFor="saveQuestion">Question</label>
               <input
                 type="text"
                 ref="question"
                 placeholder="What do you wanna ask?"
+                className="form-control"
               />
+              </div>
+              <div className="form-group">
+              <label htmlFor="desc">Description</label>
               <input
                 type="text"
                 ref="desc"
-                placeholder="Description"
+                placeholder="Add a description to your question"
+                className="form-control"
               />
+              </div>
               <label>
                 Pick the categories that matches your question:
                 <Select
@@ -117,12 +124,16 @@ constructor(props) {
                   value={value}
                 />
               </label>
+              <div className="form-group">
+              <label htmlFor="options">Answer options for you question</label>
                 <input required
                   type="text"
                   onKeyPress={this.handleOptions.bind(this)}
                   ref="option"
-                  placeholder="Add new options to your question (press enter to submit each option)"
+                  placeholder="Press enter to submit each option"
+                  className="form-control"
                 />
+                </div>
                 { this.state.display &&
                   <div className="error">
                     {this.state.error}
@@ -133,7 +144,7 @@ constructor(props) {
                     {this.renderOptions()}
                   </ul>
               </div>
-              <input type="button" value="Submit" form="saveQuestion" onClick={this.handleSubmit.bind(this)} />
+              <button type="button" className="btn btn-default submit" value="Submit" form="saveQuestion" onClick={this.handleSubmit.bind(this)}><i className="fa fa-paper-plane" aria-hidden="true"></i>Ask it!</button>
               </div>
           </header>          
         </div>
@@ -155,3 +166,4 @@ export default createContainer(() => {
     options:Options.find({}).fetch()
   };
 }, Add);
+
