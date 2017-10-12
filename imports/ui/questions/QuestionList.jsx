@@ -19,7 +19,7 @@ class QuestionList extends Component {
 		);
 		else
 			return(
-				<div><h2> Apparently there are no questions yet :( </h2><br/>
+				<div><h2> There are no questions that meet your query </h2><br/>
 				{this.props.currentUser && <div><p> Go to 'Add Question' to add a new question </p></div>}
 				{(this.props.currentUser == undefined || this.props.currentUser == null) && <p> Sign up or login to add a new question!</p> }
 

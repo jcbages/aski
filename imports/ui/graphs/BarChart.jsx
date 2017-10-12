@@ -59,9 +59,12 @@ export default class BarChart extends React.Component {
     title = "Options";  
     let data = [];
     let datos = this.state.data;
+    let labels = [];
     this.props.options.map((option, index)=> {
       data.push(option.count);
+      labels.push(option.name);
     })
+    datos.labels = labels;
     datos.datasets[0].data = data;
     return (
       <Bar data={datos} />

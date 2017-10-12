@@ -24,3 +24,26 @@ if (Meteor.isServer) {
     return Options.find();
   });
 }
+
+Meteor.methods({
+  'options.insert'(name) {
+
+    // Make sure the user is logged in before inserting a task
+    if (! Meteor.userId()) {
+      throw new Meteor.Error('not-authorized');
+    }
+    Options.insert({
+      name: name,
+      count:0,
+      countries:[]
+    })
+  },
+  "options.remove"(id){
+    // Make sure the user is logged in before inserting a task
+    if (! Meteor.userId()) {
+      throw new Meteor.Error('not-authorized');
+    }
+    Options.remove({_id:id});
+  }
+
+});

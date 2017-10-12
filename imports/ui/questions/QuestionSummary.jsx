@@ -13,7 +13,7 @@ class QuestionSummary extends Component {
 	render(){
 
     const question = this.props.question;
-    const route = "question/" + this.props.question._id;
+    let route = "question/" + this.props.question._id;
 		return (
 			<a href={route} className="list-group-item list-group-item-action flex-column align-items-start">
 				<div className="d-flex w-100 justify-content-between">

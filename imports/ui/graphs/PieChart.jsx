@@ -31,13 +31,20 @@ export default class PieChart extends React.Component {
     var width = 700,
     height = 300,
     title = "Options";
-    let labels = this.state.data.labels;
     let colors = this.state.data.datasets[0].backgroundColor;
     let data = [];
+    let labels = [];
     let datos = this.state.data;
     this.props.options.map((option, index)=> {
       data.push(option.count);
+      labels.push(option.name);
+      if(!this.state.data.labels.includes(option.name)){
+        colors.push('#'+Math.floor(Math.random()*16777215).toString(16));
+      }
     })
+    datos.labels = labels;
+    datos.datasets[0].backgroundColor = colors;
+    datos.datasets[0].hoverBackgroundColor = colors;
     datos.datasets[0].data = data;
     return (
       <Pie data={datos} />

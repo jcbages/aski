@@ -22,11 +22,67 @@ class Question extends Component {
     this.state = {
       selectedOption:"",
       rating:"",
-      isUp:[],
-      pasos:[],
+      commentsWithVotes: [],
       value: 0,
+      submited:false,
+      error:"",
+      display:false
     }
     this.renderTabs = this.renderTabs.bind(this);
+
+  }
+  componentWillMount(){
+    let order = [];
+    let newComments = [];
+    this.props.question.comments.map((comment, index)=>{
+      if(comment.authorId == this.props.currentUser._id){
+        this.setState({submited:true}); 
+      }
+      comment.key = index;
+      newComments.push(comment);
+    })
+    this.setState({commentsWithVotes:this.props.question.comments});
+    newComments.sort(this.compare).map((comment)=>{
+      order.push(comment.key);
+    })
+    $( ".individualComment" ).each(function( index ) {
+      var current = index;
+      var indexOf = order.findIndex(i => i == current);
+      $(this).css("top", indexOf * 200 + "px");
+    })
+  }
+  componentWillUpdate(){
+    let order = [];
+    let newComments = [];
+    this.props.question.comments.map((comment, index)=>{
+      comment.key = index;
+      newComments.push(comment);
+    })
+     newComments.sort(this.compare).map((comment)=>{
+      order.push(comment.key);
+    })
+    $( ".individualComment" ).each(function( index ) {
+      var current = index;
+      var indexOf = order.findIndex(i => i == current);
+      $(this).css("top", indexOf * 200 + "px");
+    })
+  }
+  updateVotes(comments){
+    let commentsWithVotes = [];
+    comments.map((comment)=>{
+      comment.votes.votersUp.map((voterUp)=>{
+        if(voterUp == this.props.currentUser._id){
+          comment.voto = "up";
+        }
+      })
+      comment.votes.votersDown.map((voterDown)=>{
+        if(voterDown == this.props.currentUser._id){
+          comment.voto = "down";
+        }
+      })
+      commentsWithVotes.push(comment);
+    })
+    return commentsWithVotes;
 
   }
   roundNumber(num, scale) {
@@ -62,7 +118,8 @@ class Question extends Component {
       authorName: this.props.currentUser.username,
       text: text,
       createdAt: new Date(),
-      rating: {rating:0,count:0}
+      rating: {rating:0,count:0},
+      votes:{result:0, votersUp:[],votersDown:[]},
     }
     const country = this.props.currentUser.country;
     let indexOption = 0;
@@ -89,7 +146,11 @@ class Question extends Component {
       }
     })
     ReactDOM.findDOMNode(this.refs.comment).value = "";
-    Meteor.call("questions.answer", id, rating, options, comments, found, indexOption, indexCountry)
+    Meteor.call("questions.answer", id, rating, options, comments, found, indexOption, indexCountry,()=>{
+      this.setState({commentsWithVotes:question.comments});
+      this.setState({submited:true});
+      window.alert("thanks " + this.props.currentUser.username+", your question has been submited");
+    });
 }
   handleOptionChange(changeEvent) {
   this.setState({
@@ -97,85 +158,156 @@ class Question extends Component {
   });
 }
 
-handleThumbsUp(comment,index, ev){
+handleThumbsUp(commentsWithVotes, comment,index, ev){
   const id = this.props.question._id;
-  Meteor.call("comments.voteUp", id, comment);
-  let pasos = this.state.pasos;
-  pasos[index] = pasos[index] != undefined ? pasos[index] + 1 : 1;
-  this.setState({pasos:pasos});
-  if(pasos[index] == 0){
-    let isUp = this.state.isUp;
-    isUp[index] = undefined;
-    this.setState({isUp:isUp});
-  }
-  if(pasos[index] >= 1){
-    let isUp = this.state.isUp;
-    isUp[index] = true;
-    this.setState({isUp:isUp});
-  }
+  let commentWithVotes= commentsWithVotes[index];
+  let voto = "";
+  let call = "";
+  if(comment.voto == "" || comment.voto == undefined){
+    call = "comments.voteUp";
+    voto = "up";
 }
-handleThumbsDown(comment,index, ev){
+  else if (comment.voto == "up"){
+    call = "comments.removeVoteUp";
+    voto = "";
+  }
+  else if (comment.voto == "down"){
+    Meteor.call("comments.removeVoteDown",id,comment);
+    call = "comments.voteUp";
+    voto = "up";
+  }
+  Meteor.call(call, id, comment, ()=>{
+    this.props.question.comments.map((com, i)=>{
+      commentsWithVotes[i].votes = comment.votes;
+      if(com.authorId == comment.authorId ){
+        commentsWithVotes[i].voto = voto; 
+      }
+    })
+    
+    this.setState({commentsWithVotes:commentsWithVotes});
+  })
+}
+handleThumbsDown(commentsWithVotes, comment,index, ev){
   const id = this.props.question._id;
-  Meteor.call("comments.voteDown", id, comment);
-  let pasos = this.state.pasos;
-  pasos[index] = pasos[index] != undefined ? pasos[index] - 1 : -1;
-  this.setState({pasos:pasos});
-  if(pasos[index] == 0){
-    let isUp = this.state.isUp;
-    isUp[index] = undefined;
-    this.setState({isUp:isUp});
+  let voto = "";
+  let call = "";
+  if(comment.voto == "" || comment.voto == undefined){
+    call = "comments.voteDown";
+    voto = "down";
   }
-  if(pasos[index] <=-1){
-    let isUp = this.state.isUp;
-    isUp[index] = false;
-    this.setState({isUp:isUp});
+  else if (comment.voto == "down"){
+    call = "comments.removeVoteDown";
+    voto = "";
   }
+  else if (comment.voto == "up"){
+    Meteor.call("comments.removeVoteUp",id,comment);
+    call = "comments.voteDown";
+    voto = "down";
+  }
+  Meteor.call(call, id, comment, ()=>{
+    this.props.question.comments.map((com, i)=>{
+      commentsWithVotes[i].votes = com.votes;
+      if(com.authorId == comment.authorId ){
+        commentsWithVotes[i].voto = voto; 
+      }
+    })
+    this.setState({commentsWithVotes:commentsWithVotes});
+  })
+  
 }
 compare(a,b) {
-  if (a.rating.rating < b.rating.rating)
+  if (a.votes.result < b.votes.result)
     return 1;
-  if (a.rating.rating > b.rating.rating)
+  if (a.thumbsUp > b.thumbsUp)
     return -1;
   return 0;
 }
+timeSince(date) {
+
+  var seconds = Math.floor((new Date() - date) / 1000);
+  console.log(seconds)
+  var interval = Math.floor(seconds / 31536000);
+
+  if (interval > 1) {
+    return interval + " years";
+  }
+  interval = Math.floor(seconds / 2592000);
+  if (interval > 1) {
+    return interval + " months";
+  }
+  interval = Math.floor(seconds / 86400);
+  if (interval > 1) {
+    return interval + " days";
+  }
+  interval = Math.floor(seconds / 3600);
+  if (interval > 1) {
+    return interval + " hours";
+  }
+  interval = Math.floor(seconds / 60);
+  if (interval > 1) {
+    return interval + " minutes";
+  }
+  return Math.floor(seconds) + " seconds";
+}
 renderComments(){
-  const self = this;
+  const self = this; 
+  let propsComments = this.props.question.comments;
+  let comments = this.updateVotes(propsComments);
+  let stateComments = this.state.commentsWithVotes;
+  comments.map((comment,index)=>{
+    comment.voto = stateComments[index] != undefined ? stateComments[index].voto : "" ;
+  })
   return (
-    <ul>
-    {this.props.question.comments.sort(this.compare).map(function(comment, index){
-      const isUp = self.state.isUp[index]; 
+    <div className="row listComments">
+    {comments.map(function(comment, index){
+      let classUp = "btn btn-default stat-item ";
+      let classDown = "btn btn-default stat-item ";
+      let commentStyle = {top: index*200 + "px"};
+      if(comment.voto == "up"){
+        classUp += "buttonActive up"; 
+        classDown += "buttonInactive";
+      }
+      else if (comment.voto == "down"){
+        classUp += "buttonInactive";
+        classDown += "buttonActive down";
+      }
+      else{
+        classUp += "buttonInactive";
+        classDown +="buttonInactive"
+      }
       if(comment.text != ""){
         return(
-          <li style={{width:"100%"}}>
-            <div className="msj-rta macro">
-              <div className="text text-r">
-                <p>{comment.text}</p>
-                <p>
-                  <small>{comment.createdAt.toLocaleString().split(',')[0]}</small>
-                </p>
+          <div className="col individualComment" style={commentStyle}>
+            <div className="panel panel-white post panel-shadow">
+             <div className="post-heading">
+                <div className="pull-left image">
+                  <img src="http://plugins.krajee.com/uploads/default_avatar_male.jpg" className="img-circle avatar" alt="user profile image"/>
+                </div>
+                <div className="pull-left meta">
+                  <div className="title h5">
+                    <b>{comment.authorName + " "}</b>
+                    made a comment.
+                  </div>
+                  <h6 className="text-muted time">{self.timeSince(comment.createdAt) + " ago"}</h6>
+                </div>
               </div>
-              <div className="avatar">
-              <p>
-                <small>{comment.authorName}</small>
-              </p>
+              <div className="post-description"> 
+              <p>{comment.text}</p>
+                <div className="stats">
+                  <a href="" className={classUp} onClick={(ev) =>self.handleThumbsUp(comments, comment, index, ev)}>
+                      <i className="fa fa-thumbs-up icon"></i> | {comment.votes.result}
+                  </a>
+                  <a href="" className={classDown} onClick={(ev) =>self.handleThumbsDown(comments, comment, index, ev)}>
+                      <i className="fa fa-thumbs-down icon"></i>
+                  </a>
+                </div>
               </div>
-              <button type="button"
-            id="testBtn"
-            className="btn btn-success glyphicon glyphicon-thumbs-up"
-            data-loading-text=" ... " onClick={(ev) =>self.handleThumbsUp(comment, index, ev)} disabled={isUp!=undefined ? isUp : false}>
-              </button>
-            <button type="button" id="testBtnDown" className="btn btn-success glyphicon glyphicon-thumbs-down" data-loading-text=" ... " onClick={(ev) =>self.handleThumbsDown(comment, index, ev)} disabled={isUp!=undefined ? !isUp : false}>
-            </button>
-            <div>
-              Puntos: {comment.rating.rating}
             </div>
-            </div>
-    
-          </li>
+          </div>
           )
         }
     })}
-    </ul>
+    </div>
   )
 }
 handleRating(ev) {
@@ -203,6 +335,28 @@ renderTabs(){
   </MuiThemeProvider>
   )
 }
+handleOptionAdd(e) {
+    if (e.key === 'Enter') {
+      const name = ReactDOM.findDOMNode(this.refs.option).value.trim();
+      const question = this.props.question;
+      var found = false;
+      this.props.question.options.map((option)=>{
+        if(option.name == name){
+          found = true;
+          console.alert("Error: this option already exists");
+        }
+      })
+      if(!found){
+        this.setState({display:false})
+        let newOption = {name:name, count:0,countries:[]};
+        Meteor.call("questions.addOption", question._id,newOption);
+    }
+    else{
+      this.setState({display:true,error:"La opción ya está registrada"})
+    }
+      ReactDOM.findDOMNode(this.refs.option).value = "";
+    }
+  }
 handleChange = (value) => {
     this.setState({
       value: value,
@@ -253,7 +407,7 @@ handleChange = (value) => {
                   </div>
                 </article>
               </section>
-              {user != null && userId != question.ownerId &&
+              {user != null && userId != question.ownerId && !this.state.submited &&
               <div>
                 <div className="modal-body">
                   <h2 className = "silver"> Possible Answers (Choose one): </h2>
@@ -272,6 +426,23 @@ handleChange = (value) => {
                   }
                 )}
                   </ul>
+                  {question.canAdd && 
+                  <div className="form-group">
+                    <h4 className = "silver">Add new possible answer</h4>
+                    <input required
+                      type="text"
+                      onKeyPress={this.handleOptionAdd.bind(this)}
+                      ref="option"
+                      placeholder="Press enter to submit the new option"
+                      className="form-control"
+                    />
+                  </div>
+                }
+                { this.state.display &&
+                  <div className="error">
+                    {this.state.error}
+                </div>
+                }
                 </div>
                 <div className="row">
                   <div className="rating">
@@ -307,15 +478,21 @@ handleChange = (value) => {
             {user == null &&
               <h5> Sign up or Login to answer this question </h5>
             }
-            {(user == null || userId != question.ownerId) &&
+            {(this.state.submited && userId != question.ownerId) &&
               <h2 className = "silver"> Analytics: </h2>
             }
-            <hr/>
-            {this.renderTabs()}
-            <h2 className = "silver"> Comments</h2><br/>
-            <div className={classes}>
-              {this.renderComments()}
+            {(this.state.submited || userId == question.ownerId) &&
+            <div>
+              <hr/>
+              {this.renderTabs()}
+              <h2 className = "silver"> Comments</h2><br/>
+              <div className={classes}>
+                <div className="comments">
+                  {this.renderComments()}
+                </div> 
+              </div>
             </div>
+          }
           </div>
         );
       }

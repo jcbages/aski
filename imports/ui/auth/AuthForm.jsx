@@ -16,7 +16,6 @@ class AuthForm extends Component{
 
 	onClick(event, toggleVal){
 		event.preventDefault();
-		
 		this.setState({
 			signUp:!this.state.signUp,
 		});

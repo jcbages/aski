@@ -20,13 +20,18 @@ const ratingSchema = new SimpleSchema({
   rating:Number,
   count:SimpleSchema.Integer,
 });
+const votesSchema = new SimpleSchema({
+  result:SimpleSchema.Integer,
+  votersUp:[String],
+  votersDown:[String]
+});
 
 const commentSchema = new SimpleSchema({
   authorId: String,
   authorName: String,
   text: String,
   createdAt: Date,
-  rating: ratingSchema,
+  votes: votesSchema
 });
 
 const questionSchema = new SimpleSchema({
@@ -39,6 +44,7 @@ const questionSchema = new SimpleSchema({
   comments: [commentSchema],
   categories: [String],
   rating:ratingSchema,
+  canAdd:Boolean,
 
 });
 
@@ -62,7 +68,7 @@ if (Meteor.isServer) {
 }
 
 Meteor.methods({
-  'questions.insert'(question, description, categories, options) {
+  'questions.insert'(question, description, categories, options, canAdd) {
 
     // Make sure the user is logged in before inserting a task
     if (! Meteor.userId()) {
@@ -78,7 +84,8 @@ Meteor.methods({
       ownerName:Meteor.user().username,
       rating:{rating:3.5,count:0},
       options:options,
-      comments:[]
+      comments:[],
+      canAdd:canAdd
     })
   },
   'questions.answer'(id,rating, options,comments, found, idOption, idCountry){
@@ -112,14 +119,23 @@ Meteor.methods({
   }
   },
   "comments.voteUp"(id, comment){
+    console.log(comment);
+    if (! Meteor.userId()) {
+      throw new Meteor.Error('not-authorized');
+    }
+    Questions.update(
+      { _id: id, "comments.authorId": comment.authorId},
+      {$inc: { "comments.$.votes.result":1},$push:{"comments.$.votes.votersUp":comment.authorId}}
+      )
+  },
+  "comments.removeVoteUp"(id,comment){
     if (! Meteor.userId()) {
       throw new Meteor.Error('not-authorized');
     }
     Questions.update(
       { _id: id, "comments.authorId": comment.authorId, "comments.createdAt": comment.createdAt},
-      {$inc: { "comments.$.rating.count":1},$inc: { "comments.$.rating.rating":1}}
+      {$inc: { "comments.$.votes.result":-1},$pull:{"comments.$.votes.votersUp":comment.authorId}}
       )
-
   },
   "comments.voteDown"(id, comment){
     if (! Meteor.userId()) {
@@ -127,7 +143,28 @@ Meteor.methods({
     }
     Questions.update(
       { _id: id, "comments.authorId": comment.authorId, "comments.createdAt": comment.createdAt},
-      {$inc: { "comments.$.rating.count":1},$inc: { "comments.$.rating.rating":-1}}
+      {$inc: { "comments.$.votes.result":-1},$push:{"comments.$.votes.votersDown":comment.authorId}}
       )
-  }
+  },
+  "comments.removeVoteDown"(id,comment){
+    if (! Meteor.userId()) {
+      throw new Meteor.Error('not-authorized');
+    }
+    Questions.update(
+      { _id: id, "comments.authorId": comment.authorId, "comments.createdAt": comment.createdAt},
+      {$inc: { "comments.$.votes.result":1},$pull:{"comments.$.votes.votersDown":comment.authorId}}
+      )
+  },
+  'questions.addOption'(id, option) {
+
+    // Make sure the user is logged in before inserting a task
+    if (! Meteor.userId()) {
+      throw new Meteor.Error('not-authorized');
+    }
+
+    Questions.update(
+      {_id:id},
+      {$push: {"options":option}}
+      )
+  },
 });

@@ -9,12 +9,15 @@ import { createContainer } from "meteor/react-meteor-data";
 import {Meteor} from "meteor/meteor"
 import Select from 'react-select';
 import "react-select/dist/react-select.css";
-
+import Toggle from 'material-ui/Toggle';
+import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
+import darkBaseTheme from 'material-ui/styles/baseThemes/darkBaseTheme';
+import getMuiTheme from 'material-ui/styles/getMuiTheme';
 
 
 const categories = [
   { label: 'Academic', value: 'academic' },
-  { label: 'Self improvement', value: 'simprov' },
+  { label: 'Self improvement', value: 'self improvement' },
   { label: 'Social', value: 'social' },
   { label: 'Hobbies', value: 'hobbies' },
   { label: 'Other', value: 'other' },
@@ -24,11 +27,17 @@ class Add extends Component {
 
 constructor(props) {
     super(props);
-    this.state = {value:"",display:false, error:""}
+    this.state = {value:"",display:false, error:"", canAdd:false}
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
+    this.onToggle = this.onToggle.bind(this);
   }
-
+  onToggle(event, toggleVal){
+    event.preventDefault();
+    this.setState({
+      canAdd:!this.state.canAdd
+    });
+  }
    handleSubmit(event) {
     event.preventDefault();
 
@@ -37,17 +46,18 @@ constructor(props) {
     const description = ReactDOM.findDOMNode(this.refs.desc).value.trim();
     const categories = this.state.value.split(",");
     const options = this.props.options;
+    const canAdd = this.state.canAdd;
     if(options.length == 0){
       this.setState({display:true, error:"Debe haber al menos una opción"});
     }
     else{
     this.setState({display:false});
-    Meteor.call("questions.insert", question, description, categories, options)
+    Meteor.call("questions.insert", question, description, categories, options, canAdd)
     ReactDOM.findDOMNode(this.refs.question).value = "";
     ReactDOM.findDOMNode(this.refs.desc).value = "";
     this.setState({value:""});
     this.props.options.map((option)=>{
-      Options.remove({_id:option._id});
+      Meteor.call("options.remove",option._id);
     })
     window.alert("A new question has been added");
     }
@@ -63,12 +73,8 @@ constructor(props) {
         }
       })
       if(!found){
-        this.setState({display:false})
-      Options.insert({
-        name: name,
-        count:0,
-        countries:[]
-      })
+        this.setState({display:false});
+        Meteor.call("options.insert",name);
     }
     else{
       this.setState({display:true,error:"La opción ya está registrada"})
@@ -88,7 +94,9 @@ constructor(props) {
 
   render() {
     const { value } = this.state;
+    const label = this.state.canAdd ? "Yes they can" : "No they can´t";
     return(
+      <MuiThemeProvider muiTheme={getMuiTheme(darkBaseTheme)}>
         <div className="container" id="add">
           <header>
             <h1 className="titleAsk">Ask Away!</h1>
@@ -125,7 +133,7 @@ constructor(props) {
                 />
               </label>
               <div className="form-group">
-              <label htmlFor="options">Answer options for you question</label>
+                  <label htmlFor="options">Answer options for you question</label>
                 <input required
                   type="text"
                   onKeyPress={this.handleOptions.bind(this)}
@@ -140,14 +148,21 @@ constructor(props) {
                 </div>
                 }
               <div className="row">
-                  <ul>
-                    {this.renderOptions()}
-                  </ul>
+                <ul>
+                  {this.renderOptions()}
+                </ul>
               </div>
+              <div className="form-group">
+                  <label tmlFor="canAdd">Can users add their own options?</label>
+                  <Toggle onToggle={this.onToggle} toggled={this.state.canAdd} label={label} labelPosition="left"/>
+
+                </div>
+
               <button type="button" className="btn btn-default submit" value="Submit" form="saveQuestion" onClick={this.handleSubmit.bind(this)}><i className="fa fa-paper-plane" aria-hidden="true"></i>Ask it!</button>
               </div>
           </header>          
         </div>
+      </MuiThemeProvider>
     );
   }
 }
