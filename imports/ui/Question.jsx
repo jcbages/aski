@@ -31,7 +31,7 @@ class Question extends Component {
     this.renderTabs = this.renderTabs.bind(this);
 
   }
-  componentWillMount(){
+  componentDidMount(){
     let order = [];
     let newComments = [];
     this.props.question.comments.map((comment, index)=>{
