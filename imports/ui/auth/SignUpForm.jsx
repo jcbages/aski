@@ -18,6 +18,7 @@ class SignUpForm extends Component{
     this.onPasswordChange = this.onPasswordChange.bind(this);
     this.user = {};
     this.error = "";
+    this.state = {error:"",display:false}
   }
 
   onSelectCountry(val){
@@ -37,6 +38,7 @@ class SignUpForm extends Component{
 
   handleSignUp(event){
     event.preventDefault();
+    this.setState({error:"",display:false})
     const username = this.user.username;
     const password = this.user.password;
     const country  = this.user.country;
@@ -55,6 +57,7 @@ class SignUpForm extends Component{
         window.alert(err.reason);
         console.log(err);
         this.props.error = error.reason;
+        this.setState({error:error.reason,display:true})
       }
       else{
         Meteor.loginWithPassword(username,password)
@@ -83,6 +86,11 @@ class SignUpForm extends Component{
           errorText={this.props.error}
           onChange={this.onPasswordChange}
         />
+        { this.state.display &&
+                  <div className="error">
+                    {this.state.error}
+                </div>
+        }
         <CountrySelect flagImagePath="/flags/" onSelect={this.onSelectCountry}/>
         <RaisedButton style={{margin:"5px 0"}} label="Sign In" secondary={true} onClick={this.handleSignUp.bind(this)}/>
   		</form>

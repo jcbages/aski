@@ -55,6 +55,7 @@ constructor(props) {
     Meteor.call("questions.insert", question, description, categories, options, canAdd)
     ReactDOM.findDOMNode(this.refs.question).value = "";
     ReactDOM.findDOMNode(this.refs.desc).value = "";
+    ReactDOM.findDOMNode(this.refs.option).value = "";
     this.setState({value:""});
     this.props.options.map((option)=>{
       Meteor.call("options.remove",option._id);
