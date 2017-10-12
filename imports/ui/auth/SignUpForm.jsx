@@ -54,7 +54,6 @@ class SignUpForm extends Component{
       console.log(username)
       console.log(password)
       if(err){
-        window.alert(err.reason);
         console.log(err);
         this.props.error = error.reason;
         this.setState({error:error.reason,display:true})
