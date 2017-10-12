@@ -479,10 +479,10 @@ handleChange = (value) => {
             {user == null &&
               <h5> Sign up or Login to answer this question </h5>
             }
-            {(this.state.submited && userId != question.ownerId) &&
+            {user == null || (this.state.submited && userId != question.ownerId) &&
               <h2 className = "silver"> Analytics: </h2>
             }
-            {(this.state.submited || userId == question.ownerId) &&
+            {(this.state.submited || userId == question.ownerId || user == null) &&
             <div>
               <hr/>
               {this.renderTabs()}
