@@ -35,6 +35,7 @@ class Question extends Component {
     let order = [];
     let newComments = [];
     this.props.question.comments.map((comment, index)=>{
+    if(this.props.currentUser != null)
       if(comment.authorId == this.props.currentUser._id){
         this.setState({submited:true}); 
       }
