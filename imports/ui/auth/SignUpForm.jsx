@@ -53,6 +53,7 @@ class SignUpForm extends Component{
     Meteor.call("user.insert", newUser, (err, result) => {
       console.log(username)
       console.log(password)
+      window.alert(err.reason);
       if(err){
         console.log(err);
         this.props.error = error.reason;
