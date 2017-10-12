@@ -72,11 +72,13 @@ class Question extends Component {
     let commentsWithVotes = [];
     comments.map((comment)=>{
       comment.votes.votersUp.map((voterUp)=>{
+        if(this.props.currentUser != null)
         if(voterUp == this.props.currentUser._id){
           comment.voto = "up";
         }
       })
       comment.votes.votersDown.map((voterDown)=>{
+        if(this.props.currentUser != null)
         if(voterDown == this.props.currentUser._id){
           comment.voto = "down";
         }
