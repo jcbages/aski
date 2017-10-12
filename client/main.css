@@ -783,6 +783,7 @@ input:focus{
 
 .error{
 	color:red;
+	font-size: 10px;
 }
 #react-root > div:nth-child(2) > div.sweet-alert > p{
 	display:none;
