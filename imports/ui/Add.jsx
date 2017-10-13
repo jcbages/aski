@@ -13,6 +13,7 @@ import Toggle from 'material-ui/Toggle';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import darkBaseTheme from 'material-ui/styles/baseThemes/darkBaseTheme';
 import getMuiTheme from 'material-ui/styles/getMuiTheme';
+import Snackbar from 'material-ui/Snackbar';
 
 
 const categories = [
@@ -27,7 +28,7 @@ class Add extends Component {
 
 constructor(props) {
     super(props);
-    this.state = {value:"",display:false, error:"", canAdd:false}
+    this.state = {value:"",display:false, error:"", canAdd:false, open:false}
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
     this.onToggle = this.onToggle.bind(this);
@@ -51,19 +52,31 @@ constructor(props) {
       this.setState({display:true, error:"Debe haber al menos una opción"});
     }
     else{
-    this.setState({display:false});
-    Meteor.call("questions.insert", question, description, categories, options, canAdd)
-    ReactDOM.findDOMNode(this.refs.question).value = "";
-    ReactDOM.findDOMNode(this.refs.desc).value = "";
-    ReactDOM.findDOMNode(this.refs.option).value = "";
-    this.setState({value:""});
-    this.props.options.map((option)=>{
-      Meteor.call("options.remove",option._id);
-    })
-    window.alert("A new question has been added");
+      this.setState({display:false});
+      Meteor.call("questions.insert", question, description, categories, options, canAdd,(err, result)=>{
+        console.log(result);
+        ReactDOM.findDOMNode(this.refs.question).value = "";
+        ReactDOM.findDOMNode(this.refs.desc).value = "";
+        ReactDOM.findDOMNode(this.refs.option).value = "";
+        this.setState({value:"", open:true});
+        this.props.options.map((option)=>{
+          Meteor.call("options.remove",option._id);
+        })
+        setTimeout(()=>{
+          FlowRouter.go("/question/"+result);
+        }, 2000);
+      })
     }
+
    
   }
+ 
+
+  handleRequestClose() {
+    this.setState({
+      open: false,
+    });
+  };
   handleOptions(e) {
     if (e.key === 'Enter') {
       const name = ReactDOM.findDOMNode(this.refs.option).value.trim();
@@ -163,6 +176,12 @@ constructor(props) {
               </div>
           </header>          
         </div>
+        <Snackbar
+          open={this.state.open}
+          message="Question added!"
+          autoHideDuration={4000}
+          onRequestClose={this.handleRequestClose.bind(this)}
+        />
       </MuiThemeProvider>
     );
   }

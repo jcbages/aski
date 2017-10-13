@@ -7,6 +7,7 @@ import {Tabs, Tab} from 'material-ui/Tabs';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import darkBaseTheme from 'material-ui/styles/baseThemes/darkBaseTheme';
 import getMuiTheme from 'material-ui/styles/getMuiTheme';
+import Snackbar from 'material-ui/Snackbar';
 
 import { createContainer } from "meteor/react-meteor-data";
 import { Mongo } from "meteor/mongo";
@@ -26,7 +27,8 @@ class Question extends Component {
       value: 0,
       submited:false,
       error:"",
-      display:false
+      display:false,
+      open:false
     }
     this.renderTabs = this.renderTabs.bind(this);
 
@@ -116,7 +118,9 @@ class Question extends Component {
   else{
     rating = question.rating;
   }
-    const comments = {
+  let comments = null;
+  if(text != ""){
+    comments = {
       authorId: this.props.currentUser._id,
       authorName: this.props.currentUser.username,
       text: text,
@@ -124,6 +128,7 @@ class Question extends Component {
       rating: {rating:0,count:0},
       votes:{result:0, votersUp:[],votersDown:[]},
     }
+  }
     const country = this.props.currentUser.country;
     let indexOption = 0;
     const countries = {countryCode:country.value, countryName:country.label};
@@ -151,8 +156,7 @@ class Question extends Component {
     ReactDOM.findDOMNode(this.refs.comment).value = "";
     Meteor.call("questions.answer", id, rating, options, comments, found, indexOption, indexCountry,()=>{
       this.setState({commentsWithVotes:question.comments});
-      this.setState({submited:true});
-      window.alert("thanks " + this.props.currentUser.username+", your question has been submited");
+      this.setState({submited:true,open:true});
     });
 }
   handleOptionChange(changeEvent) {
@@ -221,14 +225,13 @@ handleThumbsDown(commentsWithVotes, comment,index, ev){
 compare(a,b) {
   if (a.votes.result < b.votes.result)
     return 1;
-  if (a.thumbsUp > b.thumbsUp)
+  if (a.thumbsUp > b.thumbsUp) 
     return -1;
   return 0;
 }
 timeSince(date) {
 
   var seconds = Math.floor((new Date() - date) / 1000);
-  console.log(seconds)
   var interval = Math.floor(seconds / 31536000);
 
   if (interval > 1) {
@@ -346,7 +349,6 @@ handleOptionAdd(e) {
       this.props.question.options.map((option)=>{
         if(option.name == name){
           found = true;
-          console.alert("Error: this option already exists");
         }
       })
       if(!found){
@@ -365,6 +367,11 @@ handleChange = (value) => {
       value: value,
     });
   };
+   handleRequestClose() {
+    this.setState({
+      open: false,
+    });
+  };
   render() {
     const question = this.props.question;
     const classes = `comments row`;
@@ -378,6 +385,7 @@ handleChange = (value) => {
     const self = this;
     console.log(question);
     return(
+      <MuiThemeProvider muiTheme={getMuiTheme(darkBaseTheme)}>
         <div className="container">
           <div>
             <form id="answerQuestion"></form>
@@ -496,7 +504,15 @@ handleChange = (value) => {
               </div>
             </div>
           }
+          <Snackbar
+          open={this.state.open}
+          message="Answer added!"
+          autoHideDuration={4000}
+          onRequestClose={this.handleRequestClose.bind(this)}
+          position="top"
+        />
           </div>
+          </MuiThemeProvider>
         );
       }
     }

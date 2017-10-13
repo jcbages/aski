@@ -75,7 +75,7 @@ Meteor.methods({
       throw new Meteor.Error('not-authorized');
     }
 
-    Questions.insert({
+    return Questions.insert({
       question: question,
       publishedAt: new Date(),
       description:description,
@@ -86,15 +86,19 @@ Meteor.methods({
       options:options,
       comments:[],
       canAdd:canAdd
-    })
+    }
+  )
   },
   'questions.answer'(id,rating, options,comments, found, idOption, idCountry){
     // Make sure the user is logged in before inserting a task
     if (! Meteor.userId()) {
       throw new Meteor.Error('not-authorized');
     }
+    if(comments != null)
     Questions.update({_id:id},{
-      $addToSet: {comments:comments },
+      $addToSet:{comments:comments}
+    })
+    Questions.update({_id:id},{
       $set: { rating: rating}
     })
     Questions.findAndModify({
@@ -104,7 +108,6 @@ Meteor.methods({
     var find = "options." + idOption + ".countries." + idCountry + ".count";
     var obj={};
     obj[find] = 1; 
-    console.log(obj);
     if(found){
     Questions.update(
       { _id: id},
@@ -119,7 +122,6 @@ Meteor.methods({
   }
   },
   "comments.voteUp"(id, comment){
-    console.log(comment);
     if (! Meteor.userId()) {
       throw new Meteor.Error('not-authorized');
     }
