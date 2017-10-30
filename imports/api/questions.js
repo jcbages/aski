@@ -68,14 +68,14 @@ if (Meteor.isServer) {
 }
 
 Meteor.methods({
-  'questions.insert'(question, description, categories, options, canAdd) {
+  'questions.insert'(question, description, categories, options, canAdd, collections) {
 
     // Make sure the user is logged in before inserting a task
     if (! Meteor.userId()) {
       throw new Meteor.Error('not-authorized');
     }
 
-    Questions.insert({
+    const question_id = Questions.insert({
       question: question,
       publishedAt: new Date(),
       description:description,
@@ -87,6 +87,9 @@ Meteor.methods({
       comments:[],
       canAdd:canAdd
     })
+
+    Meteor.call('collections.questions.insert', question_id, collections);
+
   },
   'questions.answer'(id,rating, options,comments, found, idOption, idCountry){
     // Make sure the user is logged in before inserting a task

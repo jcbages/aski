@@ -40,14 +40,16 @@ class QuestionList extends Component {
 }
 
 export default createContainer(({query}) => {
+	var handle;
   if(query){
-    Meteor.subscribe('questions.query', query)
+    handle = Meteor.subscribe('questions.query', query)
   }
   else{
-    Meteor.subscribe('questions')
+    handle = Meteor.subscribe('questions')
   }
 
   return {
+  ready:handle.ready(),
 	questions: Questions.find({}, {sort:{"rating.rating":-1}}).fetch(),
 	currentUser: Meteor.user(),
   };

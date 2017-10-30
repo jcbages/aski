@@ -26,6 +26,7 @@
     "react-d3-tooltip": "^1.4.14",
     "react-dom": "^16.0.0",
     "react-flip-move": "^2.9.15",
+    "react-komposer": "^2.0.0",
     "react-mounter": "^1.2.0",
     "react-popup": "^0.8.0",
     "react-select": "^1.0.0-rc.10",

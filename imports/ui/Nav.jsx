@@ -75,7 +75,9 @@ class Navigation extends React.Component{
                 <img src="/img/profile_placeholder.svg" className="profile-pic"/>
                 <div className="details">
                 <p className="headline">Logged in as:</p>
-                <p className="username text-primary">{this.props.currentUser.username}</p>
+                <a className="username text-primary" onClick={()=>{FlowRouter.go("/user/"+Meteor.userId())}}>
+                  {this.props.currentUser.username}
+                </a>
                 </div>
                 <li className="logout" onClick={this.handleLogout.bind(this)}>Log Out</li>
                 </div>

@@ -1,6 +1,7 @@
 import { Meteor } from 'meteor/meteor';
-import '../imports/api/questions.js';
+import '../imports/api/collections.js';
 import '../imports/api/options.js';
+import '../imports/api/questions.js';
 import { Accounts } from "meteor/accounts-base";
 
 Meteor.startup(() => {
@@ -14,7 +15,6 @@ Meteor.startup(() => {
   })
 
   Meteor.publish('users', function () {
-    console.log("Server Log: publishing all users");
     return Meteor.users.find();
   });
 
@@ -22,10 +22,17 @@ Meteor.startup(() => {
 		return Meteor.users.find({_id: this.userId},
         {fields: {'country': 1}});
 	});
-
   Meteor.methods({
-  'user.insert'(newUserData){
-    return Accounts.createUser(newUserData);
-  }
-})
+    'user.insert'(newUserData){
+      return Accounts.createUser(newUserData);
+    },
+    'user.update'(newUserData){
+      Meteor.users.update(this.userId, {
+        $set: {
+          img_url:newUserData.img_url,
+          bio:newUserData.bio
+        }
+      });
+    }
+  });
 });
