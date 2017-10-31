@@ -23,3 +23,6 @@ kadira:flow-router
 fongandrew:find-and-modify
 accounts-password
 meteortoys:allthings
+practicalmeteor:mocha
+practicalmeteor:chai
+dburles:factory

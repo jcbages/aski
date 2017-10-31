@@ -62,7 +62,7 @@ if (Meteor.isServer) {
     return Questions.find({});
   });
    Meteor.publish('questions.myself', function(id) {
-    return Questions.find({ownerId:{$regex:".*" + id +".*"}});
+    return Questions.find({ownerId:id});
   });
 
 }
