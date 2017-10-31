@@ -59,7 +59,7 @@ p {
 	float: none;
 	position:absolute;
 	right:0;
-	margin-right: 5%;
+	margin-right: 7%;
 }
 #add > header > div > div.row > div > div > label{
 	color:#7e8c8d;
@@ -167,7 +167,7 @@ p {
 	transition: background .125s ease;
 	border-radius: 3px;
 }
-.Navigation ul li:hover {
+.listItems:hover {
 	background: #e50914;
 	cursor: pointer;
 }
@@ -1075,15 +1075,15 @@ textarea.form-control {
 .panel-white{
 	position:relative;
 }
-#header-target > header > div:nth-child(3) > div.sweet-alert > h2 > div > form > div:nth-child(2){
+#navigation > div > div.sweet-alert > h2 > div > form > div:nth-child(2){
 	color:grey;
 }
-#header-target > header > div:nth-child(3) > div.sweet-alert > p > span > button{
-	display:none;
-}
-#header-target > header > div:nth-child(3) > div.sweet-alert > h2 > div > form > div:nth-child(5){
+#navigation > div > div.sweet-alert > h2 > div > form > div:nth-child(5){
 	width:60%;
 	margin-left:20%;
+}
+#navigation > div > div.sweet-alert > p > span > button{
+	display:none;
 }
 
 #add > header > div > div:nth-child(4) > input{
@@ -1112,3 +1112,22 @@ button.submit{
 	border-radius: 3px;
 }
 
+.btn-glyphicon {
+    padding:8px;
+    background:#ffffff;
+    margin-right:4px;
+}
+.icon-btn {
+    padding: 1px 15px 3px 2px !important;
+    border-radius:50px !important;
+}
+
+.fa-search { 
+  position: absolute;
+  top: 40px;
+  left: 250px;
+  font-size: 15px;
+  color:lightgray;
+  	cursor:pointer;
+
+}

@@ -286,7 +286,7 @@ renderComments(){
             <div className="panel panel-white post panel-shadow">
              <div className="post-heading">
                 <div className="pull-left image">
-                  <img src="http://plugins.krajee.com/uploads/default_avatar_male.jpg" className="img-circle avatar" alt="user profile image"/>
+                  <img src="http://plugins.krajee.com/uploads/default_avatar_male.jpg" alt="default img" className="img-circle avatar" alt="user profile image"/>
                 </div>
                 <div className="pull-left meta">
                   <div className="title h5">
@@ -393,7 +393,7 @@ handleChange = (value) => {
                 <article className="row">
                   <div className="col-md-2 col-sm-2 hidden-xs">
                     <figure className="thumbnail">
-                      <img className="img-responsive" src="http://www.keita-gaming.com/assets/profile/default-avatar-c5d8ec086224cb6fc4e395f4ba3018c2.jpg" />
+                      <img className="img-responsive" alt="default-img" src="http://www.keita-gaming.com/assets/profile/default-avatar-c5d8ec086224cb6fc4e395f4ba3018c2.jpg" />
                       <figcaption className="text-center"><a href={route}>{question.ownerName}</a></figcaption>
                     </figure>
                   </div>

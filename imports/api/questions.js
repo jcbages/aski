@@ -171,4 +171,7 @@ Meteor.methods({
       {$push: {"options":option}}
       )
   },
+  "questions.remove"(id){
+    Questions.remove({_id:id});
+  }
 });
