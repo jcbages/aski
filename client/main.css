@@ -91,6 +91,7 @@ p {
 .account>.details>.username {
     font-size: 1.5rem;
     text-align: center;
+	cursor: pointer;
 }
 
 .account>.logout {
@@ -1101,3 +1102,13 @@ label{
 button.submit{
 	margin-top:2%;
 }
+
+.account{
+	font-weight: 400;
+	padding: 7px 10px;
+	font-size: 14px;
+	-webkit-transition: background .125s ease;
+	transition: background .125s ease;
+	border-radius: 3px;
+}
+

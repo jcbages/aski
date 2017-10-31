@@ -2,7 +2,7 @@ import { Meteor } from "meteor/meteor";
 import { Mongo } from "meteor/mongo";
 import { check } from "meteor/check";
 import SimpleSchema from "simpl-schema";
-import Questions from "./questions"
+import {Questions} from "./questions"
 
 const collectionSchema = new SimpleSchema({
 	name:String,

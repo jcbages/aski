@@ -34,14 +34,14 @@ class Add extends Component {
 
 constructor(props) {
     super(props);
-    this.state = {value:"", collections:"",display:false, error:"", canAdd:false, open:false, alert:null}
+    this.state = {value:"", collections:[],display:false, error:"", canAdd:false, open:false, alert:null}
     this.handleChange = this.handleChange.bind(this);
     this.handleChangeCollection = this.handleChangeCollection.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
     this.onToggle = this.onToggle.bind(this);
     this.showSuccess = this.showSuccess.bind(this);
-    console.log(props)
-    this.collections = props.collections.map(function(d){
+    console.log(this.props)
+    this.collections = this.props.collections.map(function(d){
       return {label:d.name, value:d._id}
     });
   }
@@ -61,7 +61,12 @@ constructor(props) {
           </SweetAlert>
         )
     }
-    
+    componentWillUpdate(){
+      console.log(this.props)
+    this.collections = this.state.collections.map(function(d){
+      return {label:d.name, value:d._id}
+    });
+    }
    handleSubmit(event) {
     event.preventDefault();
 
@@ -78,7 +83,6 @@ constructor(props) {
       this.setState({display:true, error:"Debe haber al menos una opción"});
     }
     else{
-<<<<<<< HEAD
       this.setState({display:false});
       Meteor.call("questions.insert", question, description, categories, options, canAdd,(err, result)=>{
         console.log(result);
@@ -93,19 +97,8 @@ constructor(props) {
         })
         setTimeout(()=>{
           FlowRouter.go("/question/"+result);
-        }, 2000);
+        }, 2000); 
       })
-=======
-    this.setState({display:false});
-    Meteor.call("questions.insert", question, description, categories, options, canAdd, collections)
-    ReactDOM.findDOMNode(this.refs.question).value = "";
-    ReactDOM.findDOMNode(this.refs.desc).value = "";
-    this.setState({value:""});
-    this.props.options.map((option)=>{
-      Meteor.call("options.remove",option._id);
-    })
-    window.alert("A new question has been added");
->>>>>>> 709f809c8de062cdb81476a82322f8e03dea0e83
     }
 
    
@@ -226,13 +219,8 @@ constructor(props) {
                 </ul>
               </div>
               <div className="form-group">
-<<<<<<< HEAD
-                  <label tmlFor="canAdd">Can users add their own options?</label>
-                  <Toggle labelStyle={divStyle} onToggle={this.onToggle} toggled={this.state.canAdd} label={label} labelPosition="left"/>
-=======
                   <label htmlFor="canAdd">Can users add their own options?</label>
-                  <Toggle onToggle={this.onToggle} toggled={this.state.canAdd} label={label} labelPosition="left"/>
->>>>>>> 709f809c8de062cdb81476a82322f8e03dea0e83
+                  <Toggle labelStyle={divStyle} onToggle={this.onToggle} toggled={this.state.canAdd} label={label} labelPosition="left"/>
 
                 </div>
                 <label>
@@ -241,7 +229,7 @@ constructor(props) {
                     multi
                     closeOnSelect={false}
                     onChange={this.handleChangeCollection}
-                    options={this.collections}
+                    options={this.state.collections}
                     placeholder="Select the collections"
                     value={this.state.collections}
                     shouldKeyDownEventCreateNewOption={({keyCode})=>{return keyCode===13}}

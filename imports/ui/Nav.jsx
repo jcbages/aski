@@ -68,6 +68,7 @@ class Navigation extends Component{
 
   render() {
     let self = this;
+    let route = this.props.currentUser ? "/user/"+this.props.currentUser._id : "";
     return (
     <MuiThemeProvider muiTheme={getMuiTheme(darkBaseTheme)}>
       <div id="navigation" className="Navigation">
@@ -84,7 +85,7 @@ class Navigation extends Component{
           <div className="account pull-right">
           <div className="details">
           <p className="headline">Logged in as:</p>
-          <p className="username text-primary">{this.props.currentUser.username}</p> 
+          <p className="username text-primary"><a href={route}>{this.props.currentUser.username}</a></p> 
           </div>
           <div className="logout" onClick={this.handleLogout.bind(this)}>Log Out</div>
           </div>
@@ -97,8 +98,7 @@ class Navigation extends Component{
         }
         </ul>
         </nav>
-      </div>
-      {this.state.showPopup ?
+        {this.state.showPopup ?
           <SweetAlert
           title={<AuthForm popup={self.handlePopup}/>}
           showConfirmButton= {false} // There won't be any confirm button
@@ -106,6 +106,8 @@ class Navigation extends Component{
         />
         : null
       }
+      </div>
+      
     </MuiThemeProvider>
     );
   }
