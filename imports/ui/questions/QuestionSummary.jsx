@@ -5,18 +5,34 @@ class QuestionSummary extends Component {
 	constructor(props){
 		super(props);
 	}
+	handleDelete(e){
+		e.stopPropagation();
+		Meteor.call("questions.remove",this.props.question._id);
+	}
+	handleClick(){
+		FlowRouter.go("/question/" + this.props.question._id);
+	}
 	render(){
 
     const question = this.props.question;
-    let route = "/question/" + this.props.question._id;
 		return (
-			<a href={route} className="list-group-item list-group-item-action flex-column align-items-start">
+			<a href= "#" onClick={this.handleClick.bind(this)} className="list-group-item list-group-item-action flex-column align-items-start">
 				<div className="d-flex w-100 justify-content-between">
 			      <h5 className="mb-1">{question.question}</h5>
 			      <div className="panel-heading right">{question.rating.rating}/5</div>
-			      <small>{question.publishedAt.toLocaleString().split(',')[0]}</small>
-
 			    </div>
+			    <div className="row">
+			      	<small className="col-md-2">{question.publishedAt.toLocaleString().split(',')[0]}</small>
+			      	{this.props.currentUser!= null && question.ownerId == this.props.currentUser._id && 
+			      	<div className="col-md-2 pull-right">
+			      		<a className="btn icon-btn btn-danger" onClick={this.handleDelete.bind(this)}>
+							<span className="glyphicon btn-glyphicon glyphicon-trash img-circle text-danger"></span>
+							Delete
+						</a>
+			      	</div>
+			      }
+			      </div>
+
 		    	<p className="mb-1">{question.description}</p>
 		    	<div className = "row">
         		<small className="owner col-md-4">By {question.ownerName}</small>

@@ -83,7 +83,10 @@ class Search extends React.Component{
   render() {
     return (
       <form onSubmit={this.props.onSubmit} id="search" className="Search">
-        <input type="search" placeholder="Search for a question by title or category..." />
+        <input id="inputSearch" type="search" placeholder="Search for a question by title or category..." />
+        <label htmlFor="inputSearch">  
+          .
+        </label>
       </form>
     );
   }

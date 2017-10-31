@@ -29,7 +29,7 @@ Meteor.methods({
   'options.insert'(name) {
 
     // Make sure the user is logged in before inserting a task
-    if (! Meteor.userId()) {
+    if (! Meteor.user()._id) {
       throw new Meteor.Error('not-authorized');
     }
     Options.insert({
@@ -40,7 +40,7 @@ Meteor.methods({
   },
   "options.remove"(id){
     // Make sure the user is logged in before inserting a task
-    if (! Meteor.userId()) {
+    if (! Meteor.user()._id) {
       throw new Meteor.Error('not-authorized');
     }
     Options.remove({_id:id});

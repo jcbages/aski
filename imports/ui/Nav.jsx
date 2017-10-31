@@ -74,27 +74,27 @@ class Navigation extends Component{
       <div id="navigation" className="Navigation">
         <nav>
           <ul>
-            <li onClick={()=>{FlowRouter.go("/questions")}}>Browse</li>
+            <li className="listItems" onClick={()=>{FlowRouter.go("/questions")}}>Browse</li>
             {this.props.currentUser &&
-              <li onClick={()=>{FlowRouter.go("/add")}}>Add Question</li>
+              <li className="listItems" onClick={()=>{FlowRouter.go("/add")}}>Add Question</li>
             }
             {this.props.currentUser && 
-              <li onClick={this.myQuestions.bind(this)}>My Questions</li>
+              <li className="listItems" onClick={this.myQuestions.bind(this)}>My Questions</li>
             }
         {this.props.currentUser ?
-          <div className="account pull-right">
-          <div className="details">
-          <p className="headline">Logged in as:</p>
-          <p className="username text-primary"><a href={route}>{this.props.currentUser.username}</a></p> 
-          </div>
-          <div className="logout" onClick={this.handleLogout.bind(this)}>Log Out</div>
-          </div>
+          <li className="account pull-right">
+            <div className="details">
+              <p className="headline">Logged in as:</p>
+              <p className="username text-primary"><a href={route}>{this.props.currentUser.username}</a></p> 
+            </div>
+            <div className="logout" onClick={this.handleLogout.bind(this)}>Log Out</div>
+          </li>
           :
-          <div className="account pull-right">
+          <li className="account pull-right">
             <div className="details">
             <RaisedButton  onClick={self.handlePopup}>Sign In / Login</RaisedButton> 
             </div>
-          </div>
+          </li>
         }
         </ul>
         </nav>

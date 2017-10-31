@@ -61,19 +61,16 @@ Factory.define('question', Questions, {
 });
 
 describe('question api', function () {
-  let currentId = faker.name.findName();
   beforeEach(function () {
     resetDatabase(); 
     Factory.define('user', Meteor.users, {
-      username:currentId,
+      username:faker.name.findName(),
     });
     currentUser = Factory.create('user');
     sinon.stub(Meteor, 'user');
     Meteor.user.returns(currentUser);
-    sinon.stub(Meteor, 'userId', () => currentId);
   });
    afterEach(() => {
-    Meteor.userId.restore();
     Meteor.user.restore();
     resetDatabase();
   });
