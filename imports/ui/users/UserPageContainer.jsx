@@ -21,8 +21,8 @@ class ProfilePage extends Component{
 							<ProfileSidebar user={this.props.user} questions = {this.props.questions}/>
 						</div>
 						<div className="col-sm-8">
-							<ProfileQuestionList user={this.props.user}
-												 questions = {this.props.questions}/>
+							<ProfileQuestionList user={this.props.user} currentUser = {this.props.currentUser}
+												 questions = {this.props.questions}/> 
 						</div>
 					</div>
 				</div>
@@ -37,5 +37,6 @@ export default createContainer(({id}) => {
   	ready:handle.ready(),
 	questions: Questions.find({}, {sort:{"rating.rating":-1}}).fetch(),
 	user: Meteor.users.findOne(id),
+	currentUser: Meteor.user()
   };
 }, ProfilePage);

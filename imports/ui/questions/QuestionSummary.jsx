@@ -23,7 +23,7 @@ class QuestionSummary extends Component {
 			    </div>
 			    <div className="row">
 			      	<small className="col-md-2">{question.publishedAt.toLocaleString().split(',')[0]}</small>
-			      	{this.props.currentUser && question.ownerId == this.props.currentUser._id && 
+			      	{this.props.currentUser!= null && question.ownerId == this.props.currentUser._id && 
 			      	<div className="col-md-2 pull-right">
 			      		<a className="btn icon-btn btn-danger" onClick={this.handleDelete.bind(this)}>
 							<span className="glyphicon btn-glyphicon glyphicon-trash img-circle text-danger"></span>

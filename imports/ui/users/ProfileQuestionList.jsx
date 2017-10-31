@@ -14,7 +14,7 @@ class ProfileQuestionLists extends Component {
 		if(this.props.questions.length != 0)
 			return (
 				this.props.questions.map((question, index) => {
-					return <QuestionSummary question={question} currentUser = {this.props.user} key={index}/>
+					return <QuestionSummary question={question} user = {this.props.user} currentUser = {this.props.currentUser} key={index}/>
 				})
 			);
 		else
