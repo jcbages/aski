@@ -26,7 +26,7 @@ if(Meteor.isServer){
 Meteor.methods({
   "collections.insert"(name){
 
-  	const userId = this.userId;
+  	const userId = Meteor.userId();
 
     // Make sure the user is logged in before inserting a task
     if (!userId) {
