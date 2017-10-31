@@ -1131,3 +1131,16 @@ button.submit{
   	cursor:pointer;
 
 }
+.newOption{
+	color:white !important;
+}
+.stars{
+
+}
+.answer{
+	font-size: 18px;
+	width:80px;
+}
+#react-root > div:nth-child(2) > div.sweet-alert > h2{
+	color:darkgray;
+}

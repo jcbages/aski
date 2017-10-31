@@ -8,6 +8,7 @@ import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import darkBaseTheme from 'material-ui/styles/baseThemes/darkBaseTheme';
 import getMuiTheme from 'material-ui/styles/getMuiTheme';
 import Snackbar from 'material-ui/Snackbar';
+import SweetAlert from "react-bootstrap-sweetalert";
 
 import { createContainer } from "meteor/react-meteor-data";
 import { Mongo } from "meteor/mongo";
@@ -30,9 +31,20 @@ class Question extends Component {
       display:false,
       open:false,
       showAlert:false,
+      alert:null,
     }
     this.renderTabs = this.renderTabs.bind(this);
   }
+  showSuccess(ev){
+        this.setState({alert: this.getSuccess()});
+    }
+    getSuccess(){
+      return(
+          <SweetAlert success title="Good job!" timer= {1000} showConfirmButton={false} onConfirm={null}>
+            Your answer has been submited!
+          </SweetAlert>
+        )
+    }
   componentDidMount(){
     let order = [];
     let newComments = [];
@@ -44,7 +56,7 @@ class Question extends Component {
       comment.key = index;
       newComments.push(comment);
     })
-    this.setState({commentsWithVotes:this.props.question.comments});
+    this.setState({commentsWithVotes:newComments});
     newComments.sort(this.compare).map((comment)=>{
       order.push(comment.key);
     })
@@ -119,7 +131,6 @@ class Question extends Component {
     rating = question.rating;
   }
   let comments = null;
-  if(text.trim() != ""){
     comments = {
       authorId: this.props.currentUser._id,
       authorName: this.props.currentUser.username,
@@ -128,10 +139,13 @@ class Question extends Component {
       rating: {rating:0,count:0},
       votes:{result:0, votersUp:[],votersDown:[]},
     }
-  }
     const country = this.props.currentUser.country;
     let indexOption = 0;
-    const countries = {countryCode:country.value, countryName:country.label};
+    let countries = null;
+    if(country != null)
+      countries = {countryCode:country.value, countryName:country.label};
+    else
+      countries = {};
     this.props.question.options.map((option,index)=>{
       if(option.name == this.state.selectedOption){
         indexOption = index;
@@ -154,8 +168,19 @@ class Question extends Component {
       }
     })
     ReactDOM.findDOMNode(this.refs.comment).value = "";
-    Meteor.call("questions.answer", id, rating, options, comments, found, indexOption, indexCountry,()=>{
-      this.setState({commentsWithVotes:question.comments});
+    Meteor.call("questions.answer", id, rating, options, comments, found, indexOption, indexCountry,(err,res)=>{
+      let comms = [];
+      question.comments.map((comment)=>{
+        if(comment.text.trim() != "")
+        comms.push(comment);
+      })
+      if(!err){
+        this.showSuccess();
+        setTimeout(()=>{
+          this.setState({submited:true,alert:null}) 
+        }, 2000); 
+      }
+      this.setState({commentsWithVotes:comms});
     });
 }
   handleOptionChange(changeEvent) {
@@ -280,7 +305,6 @@ renderComments(){
         classUp += "buttonInactive";
         classDown +="buttonInactive"
       }
-      if(comment.text != ""){
         return(
           <div className="col individualComment" style={commentStyle}>
             <div className="panel panel-white post panel-shadow">
@@ -310,7 +334,6 @@ renderComments(){
             </div>
           </div>
           )
-        }
     })}
     </div>
   )
@@ -374,7 +397,7 @@ handleChange = (value) => {
   render() {
     const question = this.props.question;
     const classes = `comments row`;
-    const classComment = "comment row";
+    const classComment = "comment";
     const classesAnswer = "btn-primary answer gradient";
     let user = this.props.currentUser;
     let userId = "";
@@ -420,7 +443,7 @@ handleChange = (value) => {
               </section>
               {user != null && userId != question.ownerId && !this.state.submited &&
               <div>
-                <div className="modal-body">
+                <div className="row">
                   <h2 className = "silver"> Possible Answers (Choose one): </h2>
                   <ul className="list-group">
                     {question.options.map(function(option){
@@ -445,7 +468,7 @@ handleChange = (value) => {
                       onKeyPress={this.handleOptionAdd.bind(this)}
                       ref="option"
                       placeholder="Press enter to submit the new option"
-                      className="form-control"
+                      className="form-control newOption"
                     />
                   </div>
                 }
@@ -457,7 +480,7 @@ handleChange = (value) => {
                 </div>
                 <div className="row">
                   <div className="rating">
-                    <h5 className = "silver"> How would you rate this question? </h5>
+                    <h4 className = "silver"> How would you rate this question? </h4>
                     <input onChange={self.handleRating.bind(self)} type="radio" id="star5" name="rating" value="5" /><label htmlFor="star5" title="Rocks!">5 stars</label>
                     <input onChange={self.handleRating.bind(self)} type="radio" id="star4" name="rating" value="4" /><label htmlFor="star4" title="Pretty good">4 stars</label>
                     <input onChange={self.handleRating.bind(self)} type="radio" id="star3" name="rating" value="3" /><label htmlFor="star3" title="Meh">3 stars</label>
@@ -465,8 +488,8 @@ handleChange = (value) => {
                     <input onChange={self.handleRating.bind(self)} type="radio" id="star1" name="rating" value="1" /><label htmlFor="star1" title="Sucks big time">1 star</label>
                   </div>
                 </div>
-                <div>
-                <h5 className = "silver"> Optional comment: </h5>
+                <div className="row">
+                <h4 className = "silver"> Optional comment: </h4>
                   <div className={classComment}>
                     <div>
                         <div className="msj-rta macro" style={{margin:"auto"}}>
@@ -477,7 +500,7 @@ handleChange = (value) => {
                     </div>
                   </div>
                 </div>
-                <div className="row">
+                <div className="modal-body">
                   <input className={classesAnswer} type="button" value="Answer" form="answerQuestion" onClick={this.handleSubmit.bind(this)} />
                 </div>
               </div>
@@ -505,8 +528,7 @@ handleChange = (value) => {
             </div>
           }
           </div>
-
-          
+        {this.state.alert}          
           </MuiThemeProvider>
         );
       }

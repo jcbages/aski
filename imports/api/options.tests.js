@@ -29,25 +29,18 @@ Factory.define('option', Options, {
 });
 
 describe('option api', function () {
-  let user = faker.lorem.sentence();
-  let pass = faker.lorem.sentence();
   beforeEach(function () {
     resetDatabase();
     Factory.define('user', Meteor.users, {
-      username:user,
-      password:pass,
-      profile:{
-      }
+      username:faker.name.findName(),
     });
     currentUser = Factory.create('user');
     sinon.stub(Meteor, 'user');
     Meteor.user.returns(currentUser);
-    sinon.stub(Meteor, 'userId', () => faker.lorem.sentence());
-    
+
   });
    afterEach(() => {
-    if (Meteor.userId.restore) Meteor.userId.restore();
-  if (Meteor.user.restore) Meteor.user.restore();
+    Meteor.user.restore();
     resetDatabase();
   });
 

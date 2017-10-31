@@ -53,6 +53,16 @@ class UserSidebar extends Component{
 		const userBio = this.props.user.bio || "This user doesn't has a bio yet.";
 		const canEdit = Meteor.userId() === this.props.user._id;
 		const isEditing = this.state.isEditing;
+		const questions = this.props.questions;
+		let rating = 0;
+		let sum = 0;
+		questions.map((question)=>{
+			sum += question.rating.rating;
+		})
+		if(questions.length != 0)
+			rating = sum/questions.length;
+		else
+			rating = 0;
 		return(
 			
 			<div className="profile-sidebar">
@@ -64,6 +74,7 @@ class UserSidebar extends Component{
 					<div className="profile-usertitle-name">
 					{username}
 					</div>
+					Avg rating: {rating}/5
 					<div className="profile-usertitle-bio">
 					{userBio}
 					</div>

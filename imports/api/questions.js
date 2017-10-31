@@ -71,7 +71,7 @@ Meteor.methods({
   'questions.insert'(question, description, categories, options, canAdd, collections) {
 
     // Make sure the user is logged in before inserting a task
-    if (! Meteor.userId()) {
+    if (! Meteor.user()._id) {
       throw new Meteor.Error('not-authorized');
     }
 
@@ -80,7 +80,7 @@ Meteor.methods({
       publishedAt: new Date(),
       description:description,
       categories:categories,
-      ownerId:Meteor.userId(),
+      ownerId:Meteor.user()._id,
       ownerName:Meteor.user().username,
       rating:{rating:3.5,count:0},
       options:options,
@@ -93,7 +93,7 @@ Meteor.methods({
   },
   'questions.answer'(id,rating, options,comments, found, idOption, idCountry){
     // Make sure the user is logged in before inserting a task
-    if (! Meteor.userId()) {
+    if (! Meteor.user()._id) {
       throw new Meteor.Error('not-authorized');
     }
     if(comments != null)
@@ -124,7 +124,7 @@ Meteor.methods({
   }
   },
   "comments.voteUp"(id, comment){
-    if (! Meteor.userId()) {
+    if (! Meteor.user()._id) {
       throw new Meteor.Error('not-authorized');
     }
     Questions.update(
@@ -133,7 +133,7 @@ Meteor.methods({
       )
   },
   "comments.removeVoteUp"(id,comment){
-    if (! Meteor.userId()) {
+    if (! Meteor.user()._id) {
       throw new Meteor.Error('not-authorized');
     }
     Questions.update(
@@ -142,7 +142,7 @@ Meteor.methods({
       )
   },
   "comments.voteDown"(id, comment){
-    if (! Meteor.userId()) {
+    if (! Meteor.user()._id) {
       throw new Meteor.Error('not-authorized');
     }
     Questions.update(
@@ -151,7 +151,7 @@ Meteor.methods({
       )
   },
   "comments.removeVoteDown"(id,comment){
-    if (! Meteor.userId()) {
+    if (! Meteor.user()._id) {
       throw new Meteor.Error('not-authorized');
     }
     Questions.update(
@@ -162,7 +162,7 @@ Meteor.methods({
   'questions.addOption'(id, option) {
 
     // Make sure the user is logged in before inserting a task
-    if (! Meteor.userId()) {
+    if (! Meteor.user()._id) {
       throw new Meteor.Error('not-authorized');
     }
 

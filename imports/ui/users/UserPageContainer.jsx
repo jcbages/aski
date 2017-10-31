@@ -18,7 +18,7 @@ class ProfilePage extends Component{
 				<div className="container-fluid">
 					<div className="row">
 						<div className="col-sm-4">
-							<ProfileSidebar user={this.props.user}/>
+							<ProfileSidebar user={this.props.user} questions = {this.props.questions}/>
 						</div>
 						<div className="col-sm-8">
 							<ProfileQuestionList user={this.props.user}
