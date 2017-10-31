@@ -1,5 +1,6 @@
 import { Factory } from 'meteor/dburles:factory';
 import { chai } from 'meteor/practicalmeteor:chai';
+import { Meteor } from 'meteor/meteor';
 import { Questions } from "./questions.js"
 import faker from 'faker';
 import { resetDatabase } from 'meteor/xolvio:cleaner';
@@ -27,7 +28,7 @@ Factory.define('question', Questions, {
   description: () => faker.lorem.sentence(),
   categories: () => createCategories(),
   rating: () => {return {rating:3.5,count:0}},
-  options: () => {return ["a","b"]},
+  options: () => {return []},
   canAdd: () => faker.random.boolean(),
   publishedAt: () => new Date(),
 });
@@ -35,7 +36,7 @@ Factory.define('question', Questions, {
 describe('question api', function () {
   let currentId = faker.name.findName();
   beforeEach(function () {
-    resetDatabase();
+    resetDatabase(); 
     Factory.define('user', Meteor.users, {
       username:currentId,
     });
@@ -57,7 +58,30 @@ describe('question api', function () {
     Meteor.call('questions.insert', questionsParams.question, questionsParams.description, questionsParams.categories,
     	questionsParams.options, questionsParams.canAdd, questionsParams.collections);
     const question = Questions.findOne({question:questionsParams.question});
-    console.log(question)
     assert.equal(question.description, questionsParams.description);
   })
+
+  it("Answers a question", function(){
+    const questionsParams = Factory.create("question");
+    Meteor.call('questions.insert', questionsParams.question, questionsParams.description, questionsParams.categories,
+      questionsParams.options, questionsParams.canAdd, questionsParams.collections);
+    let question = Questions.findOne({question:questionsParams.question});
+    const rating = faker.random.number();
+    const comment = faker.lorem.sentence();
+    const option = {name:faker.name.findName(),count:faker.random.number(),countries:[]};
+      Meteor.call('questions.answer',question._id,rating, option,comment, false, 0, 0);
+      question = Questions.findOne({question:questionsParams.question});
+      assert.equal(question.comments[0],comment);
+    })
+
+  it("Adds a new option", function(){
+    const questionsParams = Factory.create("question");
+    Meteor.call('questions.insert', questionsParams.question, questionsParams.description, questionsParams.categories,
+      questionsParams.options, questionsParams.canAdd, questionsParams.collections);
+    let question = Questions.findOne({question:questionsParams.question});
+    const option = {name:faker.name.findName(),count:1,countries:[]};
+    Meteor.call("questions.addOption", question._id, option);
+    question = Questions.findOne({question:questionsParams.question});
+    assert.equal(question.options[0].name, option.name); 
+  }) 
 })
