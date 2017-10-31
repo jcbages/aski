@@ -14,6 +14,8 @@ import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import darkBaseTheme from 'material-ui/styles/baseThemes/darkBaseTheme';
 import getMuiTheme from 'material-ui/styles/getMuiTheme';
 import Snackbar from 'material-ui/Snackbar';
+import RaisedButton from 'material-ui/RaisedButton';
+import SweetAlert from "react-bootstrap-sweetalert";
 
 
 const categories = [
@@ -28,10 +30,11 @@ class Add extends Component {
 
 constructor(props) {
     super(props);
-    this.state = {value:"",display:false, error:"", canAdd:false, open:false}
+    this.state = {value:"",display:false, error:"", canAdd:false, open:false, alert:null}
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
     this.onToggle = this.onToggle.bind(this);
+    this.showSuccess = this.showSuccess.bind(this);
   }
   onToggle(event, toggleVal){
     event.preventDefault();
@@ -39,6 +42,17 @@ constructor(props) {
       canAdd:!this.state.canAdd
     });
   }
+     showSuccess(ev){
+        this.setState({alert: this.getSuccess()});
+    }
+    getSuccess(){
+      return(
+          <SweetAlert success title="Good job!" timer= {1000} showConfirmButton={false} onConfirm={null}>
+            Your question has been submited!
+          </SweetAlert>
+        )
+    }
+    
    handleSubmit(event) {
     event.preventDefault();
 
@@ -59,6 +73,8 @@ constructor(props) {
         ReactDOM.findDOMNode(this.refs.desc).value = "";
         ReactDOM.findDOMNode(this.refs.option).value = "";
         this.setState({value:"", open:true});
+        if(!err)
+        this.showSuccess();
         this.props.options.map((option)=>{
           Meteor.call("options.remove",option._id);
         })
@@ -78,7 +94,7 @@ constructor(props) {
     });
   };
   handleOptions(e) {
-    if (e.key === 'Enter') {
+    if (e.key === 'Enter' || e.key == null) {
       const name = ReactDOM.findDOMNode(this.refs.option).value.trim();
       var found = false;
       this.props.options.map((option)=>{
@@ -86,9 +102,12 @@ constructor(props) {
           found = true;
         }
       })
-      if(!found){
+      if(!found && name.trim() != ""){
         this.setState({display:false});
         Meteor.call("options.insert",name);
+    }
+    else if (name.trim() == ""){
+      this.setState({display:true,error:"La opción no puede estar vacía"})
     }
     else{
       this.setState({display:true,error:"La opción ya está registrada"})
@@ -109,6 +128,11 @@ constructor(props) {
   render() {
     const { value } = this.state;
     const label = this.state.canAdd ? "Yes they can" : "No they can´t";
+    var divStyle = {
+  color: '#555',
+  width: '30%',
+};
+
     return(
       <MuiThemeProvider muiTheme={getMuiTheme(darkBaseTheme)}>
         <div className="container" id="add">
@@ -146,19 +170,26 @@ constructor(props) {
                   value={value}
                 />
               </label>
-              <div className="form-group">
-                  <label htmlFor="options">Answer options for you question</label>
-                <input required
-                  type="text"
-                  onKeyPress={this.handleOptions.bind(this)}
-                  ref="option"
-                  placeholder="Press enter to submit each option"
-                  className="form-control"
-                />
+                  <label htmlFor="options">Posible answers for your question</label>
+                  <div className="form-group">
+                    <div className= "row">
+                      <div className="col-md-8">
+                        <input required
+                          type="text"
+                          onKeyPress={this.handleOptions.bind(this)}
+                          ref="option"
+                          placeholder="Press enter to submit each option"
+                          className="form-control"
+                        />
+                      </div>
+                    <div className="col-md-4">
+                      <RaisedButton onClick={this.handleOptions.bind(this)}>Add Option</RaisedButton> 
+                    </div>
+                  </div>
                 </div>
                 { this.state.display &&
                   <div className="error">
-                    {this.state.error}
+                    {this.state.error} 
                 </div>
                 }
               <div className="row">
@@ -168,7 +199,7 @@ constructor(props) {
               </div>
               <div className="form-group">
                   <label tmlFor="canAdd">Can users add their own options?</label>
-                  <Toggle onToggle={this.onToggle} toggled={this.state.canAdd} label={label} labelPosition="left"/>
+                  <Toggle labelStyle={divStyle} onToggle={this.onToggle} toggled={this.state.canAdd} label={label} labelPosition="left"/>
 
                 </div>
 
@@ -176,12 +207,7 @@ constructor(props) {
               </div>
           </header>          
         </div>
-        <Snackbar
-          open={this.state.open}
-          message="Question added!"
-          autoHideDuration={4000}
-          onRequestClose={this.handleRequestClose.bind(this)}
-        />
+        {this.state.alert}
       </MuiThemeProvider>
     );
   }

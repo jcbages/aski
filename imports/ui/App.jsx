@@ -12,7 +12,6 @@ import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import darkBaseTheme from 'material-ui/styles/baseThemes/darkBaseTheme';
 import getMuiTheme from 'material-ui/styles/getMuiTheme';
 import AuthForm from "./auth/AuthForm.jsx"
-import RaisedButton from 'material-ui/RaisedButton';
 import Popup from "react-popup";
 import SweetAlert from "react-bootstrap-sweetalert";
 
@@ -80,10 +79,11 @@ class Navigation extends React.Component{
 
 // Search
 class Search extends React.Component{
+
   render() {
     return (
       <form onSubmit={this.props.onSubmit} id="search" className="Search">
-        <input type="search" placeholder="Search for a question..." />
+        <input type="search" placeholder="Search for a question by title or category..." />
       </form>
     );
   }
@@ -104,6 +104,16 @@ class App extends Component {
       showPopup: !this.state.showPopup
     });
   }
+ performSearch(e) {
+    // stop form from submitting
+    e.preventDefault();
+
+    // get the value
+    var query = $(".Search input").val();
+    query = {query:query}
+    FlowRouter.go("/questions", "" ,query);
+  }
+ 
 
 
   render() {
@@ -118,9 +128,7 @@ class App extends Component {
               <h1> Ask whatever you want, whenever you want</h1>
               <p>With Aski you can ask and answer tons of questions of all around the world. Just create an account and access the best question network!</p>
 
-              {!this.props.currentUser ?
-                <RaisedButton  onClick={self.handlePopup}>Sign In / Login</RaisedButton> : null
-              }
+              <Search onSubmit={this.performSearch.bind(this)} />
             </div>
             <div className="overlay"></div>
           </div>

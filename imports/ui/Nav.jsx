@@ -2,30 +2,25 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import ReactDOM from "react-dom";
 import { createContainer } from "meteor/react-meteor-data";
-import {Meteor} from "meteor/meteor"
+import {Meteor} from "meteor/meteor";
+import RaisedButton from 'material-ui/RaisedButton';
+import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
+import darkBaseTheme from 'material-ui/styles/baseThemes/darkBaseTheme';
+import getMuiTheme from 'material-ui/styles/getMuiTheme';
+import AuthForm from "./auth/AuthForm.jsx"
+import Popup from "react-popup";
+import SweetAlert from "react-bootstrap-sweetalert";
 ///////////
 // Header //
 ////////////
 
 class Nav extends React.Component{
 
-  performSearch(e) {
-    // stop form from submitting
-    e.preventDefault();
-
-    // get the value
-    var query = $(".Search input").val();
-    query = {query:query}
-    FlowRouter.go("/questions", "" ,query);
-  }
- 
-
   render() {
     return (
       <header className="Header">
         <Logo/>
         <Navigation currentUser={this.props.currentUser}/>
-        <Search onSubmit={this.performSearch.bind(this)} />
       </header>
     );
   }
@@ -50,7 +45,19 @@ class Logo extends React.Component{
 }
 
 // Navigation
-class Navigation extends React.Component{
+class Navigation extends Component{
+  constructor() {
+    super();
+    this.state = {
+      showPopup: false
+    };
+    this.handlePopup = this.handlePopup.bind(this);
+  }
+   handlePopup(ev){
+    this.setState({
+      showPopup: !this.state.showPopup
+    });
+  }
    myQuestions(e){
     FlowRouter.go("/myQuestions","", {idUser:this.props.currentUser._id});
   }
@@ -58,8 +65,11 @@ class Navigation extends React.Component{
     Meteor.logout();
     FlowRouter.go("/");   
   }
+
   render() {
+    let self = this;
     return (
+    <MuiThemeProvider muiTheme={getMuiTheme(darkBaseTheme)}>
       <div id="navigation" className="Navigation">
         <nav>
           <ul>
@@ -67,34 +77,36 @@ class Navigation extends React.Component{
             {this.props.currentUser &&
               <li onClick={()=>{FlowRouter.go("/add")}}>Add Question</li>
             }
-            {this.props.currentUser &&
+            {this.props.currentUser && 
               <li onClick={this.myQuestions.bind(this)}>My Questions</li>
             }
-            {this.props.currentUser ?
-                <div className="account pull-right">
-                <img src="/img/profile_placeholder.svg" className="profile-pic"/>
-                <div className="details">
-                <p className="headline">Logged in as:</p>
-                <p className="username text-primary">{this.props.currentUser.username}</p>
-                </div>
-                <li className="logout" onClick={this.handleLogout.bind(this)}>Log Out</li>
-                </div>
-              : ""
-            }
-          </ul>
+        {this.props.currentUser ?
+          <div className="account pull-right">
+          <div className="details">
+          <p className="headline">Logged in as:</p>
+          <p className="username text-primary">{this.props.currentUser.username}</p> 
+          </div>
+          <div className="logout" onClick={this.handleLogout.bind(this)}>Log Out</div>
+          </div>
+          :
+          <div className="account pull-right">
+            <div className="details">
+            <RaisedButton  onClick={self.handlePopup}>Sign In / Login</RaisedButton> 
+            </div>
+          </div>
+        }
+        </ul>
         </nav>
       </div>
-    );
-  }
-}
-
-// Search
-class Search extends React.Component{
-  render() {
-    return (
-      <form onSubmit={this.props.onSubmit} id="search" className="Search">
-        <input type="search" placeholder="Search for a question..." />
-      </form>
+      {this.state.showPopup ?
+          <SweetAlert
+          title={<AuthForm popup={self.handlePopup}/>}
+          showConfirmButton= {false} // There won't be any confirm button
+          onConfirm={this.handlePopup.bind(this)}
+        />
+        : null
+      }
+    </MuiThemeProvider>
     );
   }
 }

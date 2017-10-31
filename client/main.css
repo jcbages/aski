@@ -94,7 +94,8 @@ p {
 }
 
 .account>.logout {
-    margin-left: 25px
+    margin-left: 25px;
+    padding:7px 10px;
 }
 .Logo {
 	width: 151px;
@@ -169,6 +170,16 @@ p {
 	background: #e50914;
 	cursor: pointer;
 }
+.logout:hover{
+	background:#e50914;
+	cursor:pointer;
+	font-weight: 400;
+	padding: 7px 10px;
+	font-size: 14px;
+	-webkit-transition: background .125s ease;
+	transition: background .125s ease;
+	border-radius: 3px;
+}
 
 .Search {
 	-webkit-box-align: center;
@@ -190,7 +201,7 @@ p {
 	font-weight: 300;
 	font-size: 14px;
 	height: 37px;
-	width: 20%;
+	width: 60%;
 	background: transparent;
 	color: #ffffff;
 	-webkit-appearance: none;
@@ -207,7 +218,7 @@ p {
 }
 .Search input:focus {
 	border: 2px solid #e50914;
-	width: 30%;
+	width: 70%;
 }
 
 .UserProfile {
@@ -565,6 +576,7 @@ li.option {
 	cursor: pointer;
 	right:0;
 	top:0;
+	color:lightgray;
 	margin-right: 5%;
 	margin-top:2%;
 }
@@ -869,9 +881,6 @@ textarea.form-control {
   right: 16px;
   margin-right:1%;
 }
-.owner{
-	margin-right:60%;
-}
 .question-list .panel .panel-heading .panel-body {
   padding-top: 6px;
 }
@@ -1033,7 +1042,6 @@ textarea.form-control {
 }
 #add > header > div > div:nth-child(6) > div > div > label{
 	color:#555 !important;
-	width:calc(100% - 100px) !important;
 }
 .buttonActive {
   outline: 1px solid;
@@ -1065,4 +1073,31 @@ textarea.form-control {
 }
 .panel-white{
 	position:relative;
+}
+#header-target > header > div:nth-child(3) > div.sweet-alert > h2 > div > form > div:nth-child(2){
+	color:grey;
+}
+#header-target > header > div:nth-child(3) > div.sweet-alert > p > span > button{
+	display:none;
+}
+#header-target > header > div:nth-child(3) > div.sweet-alert > h2 > div > form > div:nth-child(5){
+	width:60%;
+	margin-left:20%;
+}
+
+#add > header > div > div:nth-child(4) > input{
+	width:50%;
+}
+
+#add > header > div > div:nth-child(7) > div > input[type="checkbox"]{
+	color:black;
+}
+#add > header > div > button{
+	color:black;
+}
+label{
+	color:		#696969  ;
+}
+button.submit{
+	margin-top:2%;
 }

@@ -28,10 +28,10 @@ class Question extends Component {
       submited:false,
       error:"",
       display:false,
-      open:false
+      open:false,
+      showAlert:false,
     }
     this.renderTabs = this.renderTabs.bind(this);
-
   }
   componentDidMount(){
     let order = [];
@@ -119,7 +119,7 @@ class Question extends Component {
     rating = question.rating;
   }
   let comments = null;
-  if(text != ""){
+  if(text.trim() != ""){
     comments = {
       authorId: this.props.currentUser._id,
       authorName: this.props.currentUser.username,
@@ -156,7 +156,6 @@ class Question extends Component {
     ReactDOM.findDOMNode(this.refs.comment).value = "";
     Meteor.call("questions.answer", id, rating, options, comments, found, indexOption, indexCountry,()=>{
       this.setState({commentsWithVotes:question.comments});
-      this.setState({submited:true,open:true});
     });
 }
   handleOptionChange(changeEvent) {
@@ -263,7 +262,7 @@ renderComments(){
   comments.map((comment,index)=>{
     comment.voto = stateComments[index] != undefined ? stateComments[index].voto : "" ;
   })
-  return (
+  return ( 
     <div className="row listComments">
     {comments.map(function(comment, index){
       let classUp = "btn btn-default stat-item ";
@@ -504,14 +503,9 @@ handleChange = (value) => {
               </div>
             </div>
           }
-          <Snackbar
-          open={this.state.open}
-          message="Answer added!"
-          autoHideDuration={4000}
-          onRequestClose={this.handleRequestClose.bind(this)}
-          position="top"
-        />
           </div>
+
+          
           </MuiThemeProvider>
         );
       }

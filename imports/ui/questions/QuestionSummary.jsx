@@ -23,10 +23,19 @@ class QuestionSummary extends Component {
 
 			    </div>
 		    	<p className="mb-1">{question.description}</p>
-        		<small className="owner">By {question.ownerName}</small>
-        		{question.categories.map((category)=>{
+		    	<div className = "row">
+        		<small className="owner col-md-4">By {question.ownerName}</small>
+        		<div className= "pull-right col-md-4">
+        		{question.categories.map((category,index)=>{
+        			if(index % 3 == 0 && index != 0){
+        				 return (<div><span className="label label-default right">{category}</span></div>)
+        			}
+        			else{
                           return (<span className="label label-default right">{category}</span>) 
-                        })}
+                      }
+                })}
+        		</div>
+        		</div>
 			</a>
 		);
 	}

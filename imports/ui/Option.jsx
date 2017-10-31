@@ -7,7 +7,7 @@ import PropTypes from "prop-types";
 export default class Option extends Component {	
 
   deleteThisOption() {
-    Options.remove(this.props.option._id);
+    Meteor.call("options.remove",this.props.option._id)
   }
   render() {
     return(
