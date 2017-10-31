@@ -5,15 +5,10 @@ class QuestionSummary extends Component {
 	constructor(props){
 		super(props);
 	}
-	goToQuestion(e) {
-
-    FlowRouter.go("question/" + this.props.question._id);
-
-  }
 	render(){
 
     const question = this.props.question;
-    let route = "question/" + this.props.question._id;
+    let route = "/question/" + this.props.question._id;
 		return (
 			<a href={route} className="list-group-item list-group-item-action flex-column align-items-start">
 				<div className="d-flex w-100 justify-content-between">

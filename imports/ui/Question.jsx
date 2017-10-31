@@ -383,6 +383,7 @@ handleChange = (value) => {
     }
     const self = this;
     console.log(question);
+    const route = "/user/"+question.ownerId
     return(
       <MuiThemeProvider muiTheme={getMuiTheme(darkBaseTheme)}>
         <div className="container">
@@ -393,7 +394,7 @@ handleChange = (value) => {
                   <div className="col-md-2 col-sm-2 hidden-xs">
                     <figure className="thumbnail">
                       <img className="img-responsive" src="http://www.keita-gaming.com/assets/profile/default-avatar-c5d8ec086224cb6fc4e395f4ba3018c2.jpg" />
-                      <figcaption className="text-center">{question.ownerName}</figcaption>
+                      <figcaption className="text-center"><a href={route}>{question.ownerName}</a></figcaption>
                     </figure>
                   </div>
                   <div className="col-md-10 col-sm-10">

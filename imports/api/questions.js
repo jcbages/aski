@@ -62,13 +62,13 @@ if (Meteor.isServer) {
     return Questions.find({});
   });
    Meteor.publish('questions.myself', function(id) {
-    return Questions.find({ownerId:{$regex:".*" + id +".*"}});
+    return Questions.find({ownerId:id});
   });
 
 }
 
 Meteor.methods({
-  'questions.insert'(question, description, categories, options, canAdd) {
+  'questions.insert'(question, description, categories, options, canAdd, collections) {
 
     // Make sure the user is logged in before inserting a task
     if (! Meteor.userId()) {
@@ -88,6 +88,8 @@ Meteor.methods({
       canAdd:canAdd
     }
   )
+    Meteor.call('collections.questions.insert', question_id, collections);
+
   },
   'questions.answer'(id,rating, options,comments, found, idOption, idCountry){
     // Make sure the user is logged in before inserting a task

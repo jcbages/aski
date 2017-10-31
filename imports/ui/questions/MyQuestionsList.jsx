@@ -39,8 +39,9 @@ class MyQuestionsList extends Component {
 }
 
 export default createContainer(({idUser}) => { 
-  Meteor.subscribe('questions.myself', idUser)
+  const handle = Meteor.subscribe('questions.myself', idUser)
   return {
+  	ready:handle.ready(),
 	questions: Questions.find({}, {sort:{"rating.rating":-1}}).fetch(),
 	currentUser: Meteor.user(),
   };
